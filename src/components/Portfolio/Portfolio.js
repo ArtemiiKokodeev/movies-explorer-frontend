@@ -1,21 +1,19 @@
 import { React } from 'react';
 import './Portfolio.css';
+import LinkComponent from '../LinkComponent/LinkComponent';
 
 function Portfolio() {
 
+  const linkStyle = "portfolio__project-link";
+  const linkIconStyle = `${linkStyle} "portfolio__project-link_icon"`;
+  
   const websites = {
-    staticWebsite: {
-      name: "Статичный сайт",
-      link: "https://github.com/ArtemiiKokodeev/how-to-learn/"
-    },
-    responsiveWebsite: {
-      name: "Адаптивный сайт",
-      link: "https://artemiikokodeev.github.io/russian-travel/"
-    },
-    spa: {
-      name: "Одностраничное приложение",
-      link: "https://instagram-killer.nomoredomains.monster/#/"
-    }
+    staticWebsite: <LinkComponent url="https://github.com/ArtemiiKokodeev/how-to-learn/" text="Статичный сайт" className={linkStyle}/>,
+    staticWebsiteIcon: <LinkComponent url="https://github.com/ArtemiiKokodeev/how-to-learn/" text="↗" className={linkIconStyle}/>,
+    responsiveWebsite: <LinkComponent url="https://artemiikokodeev.github.io/russian-travel/" text="Адаптивный сайт" className={linkStyle}/>,
+    responsiveWebsiteIcon: <LinkComponent url="https://artemiikokodeev.github.io/russian-travel/" text="↗" className={linkIconStyle}/>,
+    spa: <LinkComponent url="https://instagram-killer.nomoredomains.monster/#/" text="Одностраничное приложение" className={linkStyle}/>,
+    spaIcon: <LinkComponent url="https://instagram-killer.nomoredomains.monster/#/" text="↗" className={linkIconStyle}/>
   };
 
   return (
@@ -23,24 +21,18 @@ function Portfolio() {
       <div className="portfolio__container">
         <h3 className="portfolio__title">Портфолио</h3>
         <div className="portfolio__project-link-container">
-          <a href={websites.staticWebsite.link} className="portfolio__project-link" 
-            target="_blank" rel="noopener noreferrer">{websites.staticWebsite.name}</a>
-          <a href={websites.staticWebsite.link} className="portfolio__project-link portfolio__project-link_icon" 
-            target="_blank" rel="noopener noreferrer">↗</a>
+          {websites.staticWebsite}
+          {websites.staticWebsiteIcon}
         </div>
         <div class="portfolio__line"></div>
         <div className="portfolio__project-link-container">
-          <a href={websites.responsiveWebsite.link} className="portfolio__project-link" 
-            target="_blank" rel="noopener noreferrer">{websites.responsiveWebsite.name}</a>
-          <a href={websites.responsiveWebsite.link} className="portfolio__project-link portfolio__project-link_icon" 
-            target="_blank" rel="noopener noreferrer">↗</a>
+          {websites.responsiveWebsite}
+          {websites.responsiveWebsiteIcon}
         </div>
         <div class="portfolio__line"></div>
         <div className="portfolio__project-link-container">
-          <a href={websites.spa.link} className="portfolio__project-link" 
-            target="_blank" rel="noopener noreferrer">{websites.spa.name}</a>
-          <a href={websites.spa.link} className="portfolio__project-link portfolio__project-link_icon" 
-            target="_blank" rel="noopener noreferrer">↗</a>
+          {websites.spa}
+          {websites.spaIcon}
         </div>
       </div>
     </section>

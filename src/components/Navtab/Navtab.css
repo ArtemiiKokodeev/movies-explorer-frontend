@@ -50,6 +50,10 @@
   align-items: center;
 }
 
+.navtab__link:hover {
+  opacity: 0.7;
+}
+
 li {
   list-style-type: none;
 }

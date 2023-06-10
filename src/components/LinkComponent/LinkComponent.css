@@ -1,0 +1,8 @@
+.linkComponent {
+  color: #3456F3;
+  text-decoration: none;
+}
+
+.linkComponent:hover {
+  opacity: 0.7;
+}

@@ -37,6 +37,10 @@
   line-height: 1.33;
 }
 
+.header__link:hover {
+  opacity: 0.7;
+}
+
 .header__link_login {
   background-color: black;
   border: none;

@@ -37,6 +37,10 @@
   max-width: 600px;
 }
 
+.about-me__description-container p:last-of-type {
+  margin-bottom: 89px;
+}
+
 @media screen and (max-width: 990px) {
   .about-me__description-container {
     max-width: 364px;
@@ -105,7 +109,7 @@
 }
 
 .about-me__info {
-  margin: 0 0 89px;
+  margin: 0 0 20px;
   padding: 0;
   font-style: normal;
   font-weight: 400;
@@ -113,30 +117,54 @@
   line-height: 1.57;
 }
 
+.about-me__info_link {
+  color: #3456F3;
+  text-decoration: none;
+}
+
+.about-me__info_link:hover {
+  opacity: 0.7;
+}
+
 @media screen and (max-width: 990px) {
   .about-me__info {
-    margin-bottom: 87px;
     font-size: 12px;
     line-height: 1.5;
   }
 }
 
+@media screen and (max-width: 990px) {
+  .about-me__description-container p:last-of-type {
+    margin-bottom: 87px;
+  }
+}
+
 @media screen and (max-width: 650px) {
   .about-me__info {
-    margin-bottom: 40px;
     font-size: 11px;
     line-height: 1.5;
   }
 }
 
+@media screen and (max-width: 650px) {
+  .about-me__description-container p:last-of-type {
+    margin-bottom: 40px;
+  }
+}
+
 .about-me__link {
   text-decoration: none;
+  color: #3456F3;
   margin: 0;
   padding: 0;
   font-style: normal;
   font-weight: 500;
   font-size: 14px;
   line-height: 1.21;
+}
+
+.about-me__link:hover {
+  opacity: 0.7;
 }
 
 .about-me__photo {
