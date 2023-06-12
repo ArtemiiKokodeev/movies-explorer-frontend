@@ -1,13 +1,14 @@
 import React from 'react'
 import './Movies.css'
+import SearchForm from '../SearchForm/SearchForm';
+// import Preloader from '../Preloader/Preloader';
 import Footer from '../Footer/Footer';
 
-const Movies = () => {
+function Movies() {
     return (
       <>
-        <div>
-          <span>sssssssssss</span>
-        </div>
+        <SearchForm />
+        {/* <Preloader /> */}
         <Footer />
       </>
     )

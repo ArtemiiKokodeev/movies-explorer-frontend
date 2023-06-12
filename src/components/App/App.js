@@ -6,8 +6,8 @@ import Login from '../Login/Login';
 import PageNotFound from '../PageNotFound/PageNotFound';
 import MainLayout from '../MainLayout/MainLayout';
 import Main from '../Main/Main';
-// import Movies from '../Movies/Movies';
-// import SavedMovies from '../SavedMovies/SavedMovies';
+import Movies from '../Movies/Movies';
+import SavedMovies from '../SavedMovies/SavedMovies';
 import Profile from '../Profile/Profile';
 
 function App() {
@@ -33,12 +33,12 @@ function App() {
       <Route exact path="/signup" element={<Register />} /> 
       <Route exact path="/signin" element={<Login />} />
       <Route path="*" element={<PageNotFound />} />
-        <Route exact path="/*" element={<MainLayout windowSize={windowSize}/>}>
-          <Route path="/*" element={<Main />} />
-          {/* <Route exact path="movies" element={<Movies />} />  */}
-          {/* <Route exact path="/saved-movies" element={<SavedMovies />} />  */}
-          <Route exact path="profile" element={<Profile />} />
-        </Route>
+      <Route exact path="/*" element={<MainLayout windowSize={windowSize}/>}>
+        <Route path="/*" element={<Main />} />
+        <Route exact path="movies" element={<Movies />} /> 
+        <Route exact path="saved-movies" element={<SavedMovies />} /> 
+        <Route exact path="profile" element={<Profile />} />
+      </Route>
 
       </Routes>
     </div>

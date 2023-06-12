@@ -33,6 +33,8 @@ function Login() {
         redirectQuestionText="Еще не зарегистрированы?"
         redirectRoute="/signup"
         redirectActionText="Регистрация"
+        isApiError={false}
+        apiErrorText={""}
         children={(
           <div>
             <p className="user-form__input-name">E-mail</p>

@@ -20,7 +20,6 @@
   }
 }
 
-
 @media screen and (max-width: 650px) {
   .navigation {
     padding: 144px 10px 46px;
@@ -96,17 +95,20 @@
   }
 }
 
+.navigation__link_profile {
+  background: #F9F9F9;
+  border-radius: 20px;
+  border: none;
+  box-shadow: none;
+  min-width: 100px;
+  min-height: 32px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+}
+
 @media screen and (max-width: 990px) {
   .navigation__link_profile {
     margin-top: 621px;
-    background: #F9F9F9;
-    border-radius: 20px;
-    border: none;
-    box-shadow: none;
-    min-width: 100px;
-    min-height: 32px;
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
   }
 }

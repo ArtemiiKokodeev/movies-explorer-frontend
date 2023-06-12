@@ -1,0 +1,15 @@
+.api-error {
+  display: none;
+  padding: 0;
+  margin: 0 0 20px;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 11px;
+  line-height: 1.21;
+  color: #FF004C;
+  text-align: center;
+}
+
+.api-error_active {
+  display: block;
+}

@@ -34,6 +34,8 @@ function Register() {
         redirectQuestionText="Уже зарегистрированы?"
         redirectRoute="/signin"
         redirectActionText="Войти"
+        isApiError={false}
+        apiErrorText={""}
         children={(
           <div>
             <p className="user-form__input-name">Имя</p>
@@ -45,7 +47,7 @@ function Register() {
                 placeholder=""
                 value={formValue.name || ''} 
                 onChange={handleChange}
-                className="user-form__input user-form__input_type_text" 
+                className="user-form__input user-form__input_type_name" 
                 required  
               />
               <span className="user-form__text-error name-text-error"></span>
