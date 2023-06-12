@@ -17,19 +17,19 @@ function Portfolio() {
   };
 
   return (
-    <section class="portfolio">
+    <section className="portfolio">
       <div className="portfolio__container">
         <h3 className="portfolio__title">Портфолио</h3>
         <div className="portfolio__project-link-container">
           {websites.staticWebsite}
           {websites.staticWebsiteIcon}
         </div>
-        <div class="portfolio__line"></div>
+        <div className="portfolio__line"></div>
         <div className="portfolio__project-link-container">
           {websites.responsiveWebsite}
           {websites.responsiveWebsiteIcon}
         </div>
-        <div class="portfolio__line"></div>
+        <div className="portfolio__line"></div>
         <div className="portfolio__project-link-container">
           {websites.spa}
           {websites.spaIcon}

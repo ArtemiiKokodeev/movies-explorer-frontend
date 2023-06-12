@@ -1,17 +1,14 @@
 import { React, useEffect, useState } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import './App.css';
-import Header from '../Header/Header';
-import NavigationPopup from '../NavigationPopup/NavigationPopup';
+import Register from '../Register/Register';
+import Login from '../Login/Login';
+import PageNotFound from '../PageNotFound/PageNotFound';
+import MainLayout from '../MainLayout/MainLayout';
 import Main from '../Main/Main';
-import Footer from '../Footer/Footer';
 // import Movies from '../Movies/Movies';
 // import SavedMovies from '../SavedMovies/SavedMovies';
-// import Profile from '../Profile/Profile';
-// import Register from '../Register/Register';
-// import Login from '../Login/Login';
-
-
+import Profile from '../Profile/Profile';
 
 function App() {
 
@@ -30,61 +27,20 @@ function App() {
     };
   }, []);
 
-  const [isNavigationPopupOpen, setIsNavigationPopupOpen] = useState(false);
-
-  function handleGroupMenuIconClick() {
-    setIsNavigationPopupOpen(true);
-  }
-
-  function closeAllPopups() {
-    setIsNavigationPopupOpen(false);
-  }
-
   return (
     <div className="App">
-      <Header 
-        windowSize={windowSize}
-        onNavigationPopup={handleGroupMenuIconClick}
-      />
-
-      <NavigationPopup
-        isOpen={isNavigationPopupOpen}
-        onClose={closeAllPopups}
-      />
-
       <Routes>
-        <Route exact path="/"
-          element={<Main
-          />}
-        />
+      <Route exact path="/signup" element={<Register />} /> 
+      <Route exact path="/signin" element={<Login />} />
+      <Route path="*" element={<PageNotFound />} />
+        <Route exact path="/*" element={<MainLayout windowSize={windowSize}/>}>
+          <Route path="/*" element={<Main />} />
+          {/* <Route exact path="movies" element={<Movies />} />  */}
+          {/* <Route exact path="/saved-movies" element={<SavedMovies />} />  */}
+          <Route exact path="profile" element={<Profile />} />
+        </Route>
 
-        {/* <Route exact path="/movies"
-            element={<Movies
-            />}
-        />
-
-        <Route exact path="/saved-movies"
-            element={<SavedMovies
-            />}
-        />
-
-        <Route exact path="/profile"
-            element={<Profile
-            />}
-        />
-
-        <Route exact path="/signup"
-            element={<Register
-            />}
-        />
-
-        <Route exact path="/signin"
-            element={<Login
-            />}
-        /> */}
       </Routes>
-
-      <Footer />
     </div>
   );
 }

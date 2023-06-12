@@ -5,7 +5,7 @@ import TitleWithLine from '../TitleWithLine/TitleWithLine';
 function AboutProject() {
 
   return (
-    <section class="about-project" id="about-project">
+    <section className="about-project" id="about-project">
       <div className="about-project__container">
         <TitleWithLine title={"О проекте"}/>
         <div className="about-project__description-container">

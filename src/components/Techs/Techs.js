@@ -5,7 +5,7 @@ import TitleWithLine from '../TitleWithLine/TitleWithLine';
 function Techs() {
 
   return (
-    <section class="techs" id="techs">
+    <section className="techs" id="techs">
       <TitleWithLine title={"Технологии"}/>
       <div className="techs__container">
         <h3 className="techs__title">7 технологий</h3>

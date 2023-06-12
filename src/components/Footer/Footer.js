@@ -6,9 +6,9 @@ function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer class="footer">
+    <footer className="footer">
         <h3 className="footer__text footer__text_title">Учебный проект Яндекс.Практикум х BeatFilm.</h3>
-        <div class="footer__line"></div>
+        <div className="footer__line"></div>
         <div className="footer__container">
           <p className="footer__text footer__text_copyright-year">&copy; {`${year}. Артемий Кокодеев`}</p>
           <div className="footer__container footer__container_links">

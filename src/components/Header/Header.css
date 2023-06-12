@@ -21,6 +21,10 @@
   }
 }
 
+/* .header_off {
+  visibility: hidden;
+} */
+
 /* .header__container {
   display: flex;
   align-items: center;
