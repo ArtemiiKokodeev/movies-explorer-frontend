@@ -13,8 +13,8 @@ function Header( { windowSize, onNavigationPopup } ) {
       <Routes>
         <Route path="/" element={
           <div className="header__container">
-            <Link to="/sign-up" className="header__link header__link_register">Регистрация</Link>
-            <Link to="/sign-in" className="header__link header__link_login">Войти</Link>
+            <Link to="/signup" className="header__link header__link_register">Регистрация</Link>
+            <Link to="/signin" className="header__link header__link_login">Войти</Link>
           </div>
           }
         />

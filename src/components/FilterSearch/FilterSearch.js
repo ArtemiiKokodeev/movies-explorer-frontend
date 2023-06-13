@@ -5,7 +5,7 @@ import filterIconDisabled from '../../images/filter-icon-disabled.svg';
 
 function FilterSearch() {
 
-  const [isFilterActive, setIsFilterActive] = useState(false);
+  const [isFilterActive, setIsFilterActive] = useState(true);
 
   function handleFilterChange() {
     setIsFilterActive(!isFilterActive);
