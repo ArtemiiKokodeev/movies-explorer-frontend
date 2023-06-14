@@ -7,13 +7,15 @@ import Footer from '../Footer/Footer';
 
 function Movies() {
     return (
-      <section>
-        <SearchForm />
-        {/* <Preloader /> */}
-        <div className="movies__line"></div>
-        <MoviesCardList />
+      <>
+        <section className="movies">
+          <SearchForm />
+          {/* <Preloader /> */}
+          <div className="movies__line"></div>
+          <MoviesCardList />
+        </section>
         <Footer />
-      </section>
+      </>
     )
 };
 

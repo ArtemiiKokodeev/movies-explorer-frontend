@@ -47,6 +47,7 @@ function SearchForm() {
         </div>
         <div className="search__filter-container">
           <img className="search__vertical-line" src={verticalLine} alt="Вертикальная линия" />
+          
           <FilterSearch />
         </div>
       </div>

@@ -23,12 +23,12 @@ function MainLayout( { windowSize } ) {
         onNavigationPopup={handleGroupMenuIconClick}
       />
 
+      <Outlet />
+
       <NavigationPopup
         isOpen={isNavigationPopupOpen}
         onClose={closeNavPopup}
       />
-
-      <Outlet />
     </>
     
   );

@@ -18,23 +18,23 @@ function Portfolio() {
 
   return (
     <section className="portfolio">
-      <div className="portfolio__container">
+      <ul className="portfolio__container">
         <h3 className="portfolio__title">Портфолио</h3>
-        <div className="portfolio__project-link-container">
+        <li className="portfolio__project-link-container">
           {websites.staticWebsite}
           {websites.staticWebsiteIcon}
-        </div>
+        </li>
         <div className="portfolio__line"></div>
-        <div className="portfolio__project-link-container">
+        <li className="portfolio__project-link-container">
           {websites.responsiveWebsite}
           {websites.responsiveWebsiteIcon}
-        </div>
+        </li>
         <div className="portfolio__line"></div>
-        <div className="portfolio__project-link-container">
+        <li className="portfolio__project-link-container">
           {websites.spa}
           {websites.spaIcon}
-        </div>
-      </div>
+        </li>
+      </ul>
     </section>
   )
 }
