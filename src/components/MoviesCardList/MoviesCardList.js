@@ -14,8 +14,8 @@ function MovieCardList() {
             />
           ))} 
         </ul> 
-        <div className="movies__button-container">
-          <button className="movies__items-loading-button" type="button" name="submitButton">Ещё</button>
+        <div className="movies-cards__button-container">
+          <button className="movies-cards__items-loading-button" type="button" name="submitButton">Ещё</button>
         </div>
       </div>
     )

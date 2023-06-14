@@ -11,7 +11,7 @@ function SavedMovies() {
         <section className="saved-movies">
           <SearchForm />
           {/* <Preloader /> */}
-          <div className="movies__line"></div>
+          <div className="saved-movies__line"></div>
           <MoviesCardList />
           </section>
         <Footer />

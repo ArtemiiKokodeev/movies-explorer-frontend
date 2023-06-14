@@ -117,7 +117,13 @@
   line-height: 1.57;
 }
 
-.about-me__info_link {
+.about-me__text-link {
+  margin: 0;
+  padding: 0;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1.57;
   color: #3456F3;
   text-decoration: none;
 }

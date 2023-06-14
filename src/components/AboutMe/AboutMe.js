@@ -6,7 +6,7 @@ import LinkComponent from '../LinkComponent/LinkComponent';
 
 function AboutMe() {
 
-  const linkStyleText = "about-me__info_link";
+  const linkStyleText = "about-me__text-link";
   const linkStyleGithub = "about-me__link";
   
   const websites = {

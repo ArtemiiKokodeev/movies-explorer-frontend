@@ -70,19 +70,25 @@
   }
 }
 
-.footer__container_links {
+.footer__links {
   width: 182px;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  justify-content: space-between;
 }
 
 @media screen and (max-width: 650px) {
-  .footer__container_links {
+  .footer__links {
     flex-direction: column;
     margin-bottom: 30px;
+    justify-content: center;
+    align-items: center;
   }
 }
 
 @media screen and (max-width: 650px) {
-  .footer__container_links a:first-child {
+  .footer__links a:first-child {
     margin-bottom: 12px;
   }
 }

@@ -11,7 +11,7 @@ function Footer() {
         <div className="footer__line"></div>
         <div className="footer__container">
           <p className="footer__text footer__text_copyright-year">&copy; {`${year}. Артемий Кокодеев`}</p>
-          <div className="footer__container footer__container_links">
+          <div className="footer__links">
             <a href="https://practicum.yandex.ru/" className="footer__text footer__text_link" 
               target="_blank" rel="noopener noreferrer">Яндекс.Практикум</a>
             <a href="https://github.com/" className="footer__text footer__text_link" 
