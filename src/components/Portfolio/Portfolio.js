@@ -18,18 +18,16 @@ function Portfolio() {
 
   return (
     <section className="portfolio">
+      <h3 className="portfolio__title">Портфолио</h3>
       <ul className="portfolio__container">
-        <h3 className="portfolio__title">Портфолио</h3>
         <li className="portfolio__project-link-container">
           {websites.staticWebsite}
           {websites.staticWebsiteIcon}
         </li>
-        <div className="portfolio__line"></div>
         <li className="portfolio__project-link-container">
           {websites.responsiveWebsite}
           {websites.responsiveWebsiteIcon}
         </li>
-        <div className="portfolio__line"></div>
         <li className="portfolio__project-link-container">
           {websites.spa}
           {websites.spaIcon}
