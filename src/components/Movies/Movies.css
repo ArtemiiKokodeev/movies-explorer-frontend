@@ -1,0 +1,18 @@
+.movies__line {
+  border: 1px #E8E8E8 solid;
+  margin: 0 auto;
+  padding: 0;
+  margin: 69px 70px 80px; 
+}
+
+@media screen and (max-width: 990px) {
+  .movies__line {
+    margin: 109px 30px 80px; 
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .movies__line {
+    margin: 45px 14px 50px; 
+  }
+}

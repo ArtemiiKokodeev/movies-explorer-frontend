@@ -1,0 +1,146 @@
+.search {
+  display: flex;
+  padding: 50px 0 0;
+  margin: 0 70px;
+}
+
+@media screen and (max-width: 990px) {
+  .search  {
+    margin: 0 30px;
+  }  
+}
+
+@media screen and (max-width: 650px) {
+  .search  {
+    margin: 0 10px;
+    padding: 66px 0 0;
+    flex-direction: column;
+    align-items: center;
+  }  
+}
+
+.search__bar {
+  padding: 13px 19px;
+  margin: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #F9F9F9;
+  border-radius: 9px;
+  border: none;
+  box-shadow: none;
+  width: 100%;
+  min-height: 45px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@media screen and (max-width: 650px) {
+  .search__bar  {
+    margin-bottom: 46px;
+    min-height: 34px;
+    padding: 19px 0;
+  }  
+}
+
+.search__container {
+  padding: 0;
+  margin: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.search__input-container {
+  padding: 0;
+  margin: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.search__input {
+  min-width: 450px;
+  padding: 5px 0 6px 0;
+  margin: 00;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 1.11;
+  color: black;
+  box-sizing: border-box;
+  outline: 0;
+  border: 0;
+  background-color: #F9F9F9;
+}
+
+.search__input:focus {
+  border-bottom: 1px solid black;
+}
+
+@media screen and (max-width: 990px) {
+  .search__input {
+    min-width: 160px;
+  }  
+}
+
+@media screen and (max-width: 650px) {
+  .search__input {
+    min-width: 50px;
+    font-size: 14px;
+    line-height: 1.38;
+  }  
+}
+
+.search__submit-button {
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  object-fit: cover;
+  box-sizing: border-box;
+  width: 34px;
+  height: 34px;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 650px) {
+  .search__submit-button {
+    margin-right: 19px;
+  }  
+}
+
+.search__submit-button:hover {
+  opacity: 0.7;
+}
+
+.search__filter-container {
+  padding: 0;
+  margin: 0;
+  display: flex;
+  width: 226px;
+  justify-content: space-between;
+  align-items: center;
+}
+
+@media screen and (max-width: 650px) {
+  .search__filter-container {
+    display: none;
+  }  
+}
+
+.search__vertical-line {
+  margin: 0 29px 0 30px;
+}
+
+.search__filter-for-650px {
+  display: none;
+}
+
+@media screen and (max-width: 650px) {
+  .search__filter-for-650px {
+    display: flex;
+  }  
+}
