@@ -63,7 +63,10 @@
 }
 
 .profile__input-container {
-  margin-bottom: 220px;
+  min-height: 314px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .profile__info-container {
@@ -167,4 +170,14 @@
 .profile__submit-button:hover {
   opacity: 0.7;
   cursor: pointer;
+}
+
+.profile__submit-button_disabled {
+  color: #C2C2C2;
+  background: #F8F8F8;
+}
+
+.profile__submit-button_disabled:hover {
+  opacity: 1;
+  cursor: auto;
 }

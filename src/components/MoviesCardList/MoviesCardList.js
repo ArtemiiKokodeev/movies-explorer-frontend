@@ -1,15 +1,14 @@
 import React from 'react'
 import './MoviesCardList.css'
-import moviesSampleList from '../../utils/constants';
+// import { moviesSampleList } from '../../utils/constants';
 import MovieCard from '../MoviesCard/MoviesCard';
 
-function MovieCardList() {
-
+function MovieCardList( { movieArr } ) {
     return (
       <div className="movies-cards">
         <ul className="movies-cards__list">
-          {moviesSampleList.map((movie, i) => (
-            <MovieCard key={i}
+          {movieArr.map((movie) => (
+            <MovieCard key={movie.id}
               movie={movie} 
             />
           ))} 

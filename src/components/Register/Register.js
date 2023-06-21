@@ -2,7 +2,7 @@ import { React, useState } from 'react';
 import './Register.css'
 import UserFormComponent from '../UserFormComponent/UserFormComponent';
 
-function Register() {
+function Register( { onRegister, isApiError, apiErrorText } ) {
 
   const [formValue, setFormValue] = useState({
     name: '',
@@ -21,7 +21,7 @@ function Register() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // onRegister(formValue.name, formValue.email, formValue.password);
+    onRegister(formValue.name, formValue.email, formValue.password);
   }
 
   return (
@@ -34,8 +34,8 @@ function Register() {
         redirectQuestionText="Уже зарегистрированы?"
         redirectRoute="/signin"
         redirectActionText="Войти"
-        isApiError={false}
-        apiErrorText={""}
+        isApiError={isApiError}
+        apiErrorText={apiErrorText}
         children={(
           <div>
             <p className="user-form__input-name">Имя</p>

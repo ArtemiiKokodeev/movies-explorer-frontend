@@ -2,7 +2,7 @@ import { React, useState } from 'react';
 import './Login.css'
 import UserFormComponent from '../UserFormComponent/UserFormComponent';
 
-function Login() {
+function Login( { onLogin, isApiError, apiErrorText } ) {
 
   const [formValue, setFormValue] = useState({
     email: '',
@@ -20,7 +20,7 @@ function Login() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // onLogin(formValue.email, formValue.password);
+    onLogin(formValue.email, formValue.password);
   }
 
   return (
@@ -33,8 +33,8 @@ function Login() {
         redirectQuestionText="Еще не зарегистрированы?"
         redirectRoute="/signup"
         redirectActionText="Регистрация"
-        isApiError={false}
-        apiErrorText={""}
+        isApiError={isApiError}
+        apiErrorText={apiErrorText}
         children={(
           <div>
             <p className="user-form__input-name">E-mail</p>

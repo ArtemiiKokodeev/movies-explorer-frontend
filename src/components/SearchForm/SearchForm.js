@@ -1,27 +1,52 @@
-import { React, useState } from 'react';
+import { React, useState, useEffect } from 'react';
 import './SearchForm.css';
 import searchIcon from '../../images/search-icon.svg';
 import searchButton from '../../images/find.svg';
 import verticalLine from '../../images/vertical-line.png';
 import FilterSearch from '../FilterSearch/FilterSearch'
 
-function SearchForm() {
+function SearchForm( { 
+  onGetAllMovies, 
+  allMovies,
+  searchedMovies,
+  onSearchMovie, 
+  onShowPreloader,
+  onShortMovieFilter,
+  isFilterActive } ) 
+  {
 
-  const [formValue, setFormValue] = useState({
-    movie: ''
-  })
+  const [formValue, setFormValue] = useState(() => {
+    const savedItem = localStorage.getItem("movie");
+    const parsedItem = JSON.parse(savedItem);
+    return { movie: parsedItem || "" };
+}); // стейт введенного в поиск названия фильма, сохраняется в LocalStorage
+  
+  useEffect(() => {
+    localStorage.setItem('movie', JSON.stringify(formValue.movie));
+  }, [formValue.movie]);
 
   const handleChange = (e) => {
     const {name, value} = e.target;
-
     setFormValue({
       ...formValue,
       [name]: value
     });
   }
+
+  // получить один раз все фильмы с api.beatfilm и сохранить в переменной allMovies
+  function handleGetAllMoviesOnce() {
+    if (allMovies.length === 0) {
+      onGetAllMovies();
+      onShowPreloader();
+    } else {
+      return;
+    }
+  }
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    // onSearchMovies(formValue.movie);
+    handleGetAllMoviesOnce();
+    onSearchMovie(formValue.movie);
   }
 
   return (
@@ -48,11 +73,17 @@ function SearchForm() {
         <div className="search__filter-container">
           <img className="search__vertical-line" src={verticalLine} alt="Вертикальная линия" />
           
-          <FilterSearch />
+          <FilterSearch 
+            onShortMovieFilter={onShortMovieFilter}
+            isFilterActive={isFilterActive}
+          />
         </div>
       </div>
       <div className="search__filter-for-650px">
-        <FilterSearch />
+          <FilterSearch 
+            onShortMovieFilter={onShortMovieFilter}
+            isFilterActive={isFilterActive}
+          />
       </div>
     </form>
   )

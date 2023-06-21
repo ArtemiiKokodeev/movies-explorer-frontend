@@ -19,7 +19,9 @@ function MoviesCard( { movie } ) {
           <button className={`movie__save-icon ${isSavedMovie && "movie__save-icon_saved"}`} 
             type="button" onClick={handleSaveMovie} />
         </div>
-        <img className="movie__image" src={movie.image} alt={movie.nameRU} />
+        <img className="movie__image" 
+          src={`https://api.nomoreparties.co${movie.image.url}`}
+          alt={movie.nameRU} />
       </li>
     )
 };

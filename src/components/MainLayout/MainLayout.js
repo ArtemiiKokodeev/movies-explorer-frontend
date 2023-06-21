@@ -4,7 +4,7 @@ import './MainLayout.css';
 import Header from '../Header/Header';
 import NavigationPopup from '../NavigationPopup/NavigationPopup';
 
-function MainLayout( { windowSize } ) {
+function MainLayout( { windowSize, loggedIn } ) {
 
   const [isNavigationPopupOpen, setIsNavigationPopupOpen] = useState(false);
 
@@ -21,6 +21,7 @@ function MainLayout( { windowSize } ) {
       <Header 
         windowSize={windowSize}
         onNavigationPopup={handleGroupMenuIconClick}
+        loggedIn={loggedIn}
       />
 
       <Outlet />
