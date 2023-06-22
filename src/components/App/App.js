@@ -34,6 +34,13 @@ function App() {
     return parsedItem || [];
   }); 
 
+  const [savedMovies, setSavedMovies] = useState([]); // стейт массива сохраненных фильмов пользователя
+
+  // сохранение в стейт массива сохраненных фильмов текущего пользователя
+  useEffect(() => {
+    loggedIn && handleGetSavedMovies();
+  }, [loggedIn])
+
   // переменная с массивом найденных фильмов по введенному слову searchedMovieName,
   // которая сохраняется в стейт searchedMovies и в LocalStorage
   const searchedMoviesArr = allMovies.filter(
@@ -181,11 +188,47 @@ function App() {
       setAllMovies(movies);
       setIsLoading(false);
     })
-    .catch((error) => {
-      console.log(`Ошибка при загрузке фильмов: ${error}`)
+    .catch(() => {
+      console.log("Во время запроса произошла ошибка. Возможно, проблема с соединением или сервер недоступен. Подождите немного и попробуйте ещё раз")
     })
   };
-  
+
+  // получение всех сохраненных фильмов
+  function handleGetSavedMovies() {
+    MainApi.getSavedMovies()
+    .then((movies) => {
+      setSavedMovies(movies);
+    })
+    .catch((error) => {
+      console.log(`Ошибка при загрузке сохраненных фильмов: ${error}`)
+    })
+  };
+
+  // сохранение фильма (установка лайка и добавление на страницу saved-movies)
+  function handleSaveMovies(movieInfo) {
+    MainApi.saveMovie(movieInfo)
+    .then((newSavedMovie) => {
+      setSavedMovies([newSavedMovie, ...savedMovies]);
+      handleGetSavedMovies();
+    })
+    .catch((err) => {
+      console.log(`Ошибка при сохранении фильма: ${err}`)
+    });
+  };
+
+  // удаление сохраненного фильма (снятие лайка и удаление со страницы saved-movies)
+  function handleRemoveSavedMovie(movieInfo) {
+    MainApi.removeSavedMovie(movieInfo._id)
+    .then((res) => {
+      setSavedMovies((state) => state.filter(function (m) {
+        return m !== movieInfo;
+      }))
+    })
+    .catch((err) => {
+      console.log(`Ошибка при удалении фильма из списка сохраненных: ${err}`)
+    });
+  };
+
     // API FUNCTIONS END //
 
   // редирект на страницу /movies после успешной регистрации и автоматической авторизации
@@ -223,58 +266,64 @@ function App() {
     <div className="App">
       <CurrentUserContext.Provider value={currentUser}>
         <Routes>
-        <Route exact path="/signup" element={<Register 
-          onRegister={handleRegister}
-          isApiError={isApiError}
-          apiErrorText={apiErrorText} 
-        />} /> 
-        <Route exact path="/signin" element={<Login 
-          onLogin={handleLogin}
-          isApiError={isApiError}
-          apiErrorText={apiErrorText}
-        />} />
-        <Route path="*" element={<PageNotFound />} />
-        <Route path="/*" element={<MainLayout 
-          windowSize={windowSize} 
-          loggedIn={loggedIn}
-        />} >
-          <Route exact path="/*" element={<Main />} />
-          <Route exact path="movies" element={
-            <ProtectedRoute
-              loggedIn={loggedIn}
-              onGetAllMovies={handleGetAllMovies}
-              allMovies={allMovies}
-              searchedMovies={searchedMovies}
-              isLoading={isLoading}
-              onShowPreloader={handleShowPreloader}
-              onSearchMovie={handleSearchMoviebyName}
-              onShortMovieFilter={handleShortMovieFilterChange}
-              isFilterActive={isFilterActive}
-              movieArr={
-
-                isFilterActive ? shortMovieFilterArr : searchedMovies
-              }
-              component={Movies}
-            />}
-          />
-          <Route exact path="saved-movies" element={
-            <ProtectedRoute
-              // loggedIn={loggedIn}
-              component={SavedMovies}
-            />}
-          />
-          <Route exact path="profile" element={
-            <ProtectedRoute
-              loggedIn={loggedIn}
-              currentUser={currentUser}
-              onUpdateUserInfo={handleUpdateUserInfo}
-              isApiError={isApiError}
-              apiErrorText={apiErrorText}
-              onSignOut={handleSignOut}
-              component={Profile}
-            />}
-          />
-        </Route>
+          <Route exact path="/signup" element={<Register 
+            onRegister={handleRegister}
+            isApiError={isApiError}
+            apiErrorText={apiErrorText} 
+          />} /> 
+          <Route exact path="/signin" element={<Login 
+            onLogin={handleLogin}
+            isApiError={isApiError}
+            apiErrorText={apiErrorText}
+          />} />
+          <Route path="*" element={<PageNotFound />} />
+          <Route path="/*" element={<MainLayout 
+            windowSize={windowSize} 
+            loggedIn={loggedIn}
+          />} >
+            <Route exact path="/*" element={<Main />} />
+            <Route exact path="movies" element={
+              <ProtectedRoute
+                loggedIn={loggedIn}
+                onGetAllMovies={handleGetAllMovies}
+                allMovies={allMovies}
+                searchedMovies={searchedMovies}
+                isLoading={isLoading}
+                onShowPreloader={handleShowPreloader}
+                onSearchMovie={handleSearchMoviebyName}
+                onShortMovieFilter={handleShortMovieFilterChange}
+                isFilterActive={isFilterActive}
+                onSaveMovie={handleSaveMovies}
+                savedMovies={savedMovies}
+                onRemoveSavedMovie={handleRemoveSavedMovie}
+                movieArr={
+                  isFilterActive ? shortMovieFilterArr : searchedMovies
+                }
+                component={Movies}
+              />}
+            />
+            <Route exact path="saved-movies" element={
+              <ProtectedRoute
+                loggedIn={loggedIn}
+                movieArr={savedMovies}
+                onSaveMovie={handleSaveMovies}
+                savedMovies={savedMovies}
+                onRemoveSavedMovie={handleRemoveSavedMovie}
+                component={SavedMovies}
+              />}
+            />
+            <Route exact path="profile" element={
+              <ProtectedRoute
+                loggedIn={loggedIn}
+                currentUser={currentUser}
+                onUpdateUserInfo={handleUpdateUserInfo}
+                isApiError={isApiError}
+                apiErrorText={apiErrorText}
+                onSignOut={handleSignOut}
+                component={Profile}
+              />}
+            />
+          </Route>
         </Routes>
       </CurrentUserContext.Provider>
     </div>

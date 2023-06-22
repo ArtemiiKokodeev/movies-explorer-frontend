@@ -3,13 +3,25 @@ import './MoviesCardList.css'
 // import { moviesSampleList } from '../../utils/constants';
 import MovieCard from '../MoviesCard/MoviesCard';
 
-function MovieCardList( { movieArr } ) {
+function MovieCardList( { 
+  movieArr, 
+  onSaveMovie, 
+  savedMovies,
+  onRemoveSavedMovie,
+  movieIdKind, 
+  movieImageKind
+} ) {
     return (
       <div className="movies-cards">
         <ul className="movies-cards__list">
           {movieArr.map((movie) => (
-            <MovieCard key={movie.id}
-              movie={movie} 
+            <MovieCard key={movieIdKind === "movieId" ? movie.movieId : movie.id}
+              movie={movie}
+              onSaveMovie={onSaveMovie}
+              savedMovies={savedMovies}
+              onRemoveSavedMovie={onRemoveSavedMovie}
+              movieIdKind={movieIdKind}
+              movieImageKind={movieImageKind}
             />
           ))} 
         </ul> 

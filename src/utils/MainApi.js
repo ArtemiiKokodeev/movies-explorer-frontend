@@ -62,7 +62,7 @@ export const getCurrentUser = () => {
   .then(getResponse)
 }
 
-// Заменить данные пользователя (PATCH)
+// редактирование данных (имя, email) текущего пользователя
 export const updateUserInfo = (userInfo) => {
   const token = localStorage.getItem('jwt');
   return fetch(`${BASE_URL}users/me`, {
@@ -72,6 +72,57 @@ export const updateUserInfo = (userInfo) => {
       authorization: `Bearer ${token}`
     },
     body: JSON.stringify(userInfo)
+  })
+  .then(getResponse)
+}
+
+// получить все сохраненные фильмы
+export const getSavedMovies = () => {
+  const token = localStorage.getItem('jwt');
+  return fetch(`${BASE_URL}movies`, {
+    headers: {
+      'Content-type': 'application/json',
+      authorization: `Bearer ${token}`
+    }
+  })
+  .then(getResponse)
+}
+
+// сохранить фильм (страница saved-movies)
+export const saveMovie = (movieInfo) => {
+  const token = localStorage.getItem('jwt');
+  return fetch(`${BASE_URL}movies`, {
+    method: 'POST',
+    headers: {
+      'Content-type': 'application/json',
+      authorization: `Bearer ${token}`
+    },
+    body: JSON.stringify({
+        country: movieInfo.country,
+        director: movieInfo.director,
+        duration: movieInfo.duration,
+        year: movieInfo.year,
+        description: movieInfo.description,
+        image: `https://api.nomoreparties.co${movieInfo.image.url}`,
+        trailerLink: movieInfo.trailerLink,
+        nameRU: movieInfo.nameRU,
+        nameEN: movieInfo.nameEN,
+        thumbnail: `https://api.nomoreparties.co${movieInfo.image.formats.thumbnail.url}`,
+        movieId: movieInfo.id
+    })
+  })
+  .then(getResponse)
+}
+
+// удалить фильм из сохраненных (страница saved-movies)
+export const removeSavedMovie = (id) => {
+  const token = localStorage.getItem('jwt');
+  return fetch(`${BASE_URL}movies/${id}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-type': 'application/json',
+      authorization: `Bearer ${token}`
+    },
   })
   .then(getResponse)
 }

@@ -8,7 +8,6 @@ import FilterSearch from '../FilterSearch/FilterSearch'
 function SearchForm( { 
   onGetAllMovies, 
   allMovies,
-  searchedMovies,
   onSearchMovie, 
   onShowPreloader,
   onShortMovieFilter,
@@ -50,6 +49,9 @@ function SearchForm( {
   }
 
   return (
+    
+    // Routes
+
     <form name="search" className="search" onSubmit={handleSubmit}>
       <div className="search__bar">
         <div className="search__container">

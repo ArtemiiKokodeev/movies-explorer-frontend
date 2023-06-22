@@ -8,12 +8,14 @@ import Footer from '../Footer/Footer';
 function Movies( { 
   onGetAllMovies, 
   allMovies,
-  searchedMovies,
   isLoading,
   onShowPreloader,
   onSearchMovie,
   onShortMovieFilter,
   isFilterActive,
+  onSaveMovie,
+  savedMovies,
+  onRemoveSavedMovie,
   movieArr
  } ) 
   {
@@ -23,7 +25,6 @@ function Movies( {
           <SearchForm 
             onGetAllMovies={onGetAllMovies}
             allMovies={allMovies}
-            searchedMovies={searchedMovies}
             onSearchMovie={onSearchMovie}
             onShowPreloader={onShowPreloader}
             onShortMovieFilter={onShortMovieFilter}
@@ -33,6 +34,10 @@ function Movies( {
           <div className="movies__line"></div>
           <MoviesCardList 
             movieArr={movieArr}
+            onSaveMovie={onSaveMovie}
+            savedMovies={savedMovies}
+            onRemoveSavedMovie={onRemoveSavedMovie}
+            movieIdKind="id"
           />
         </section>
         <Footer />
