@@ -47,9 +47,13 @@
 }
 
 .movies-cards__button-container {
-  display: flex;
+  display: none;
   justify-content: center;
   align-items: center;
+}
+
+.movies-cards__button-container_active {
+  display: flex;
 }
 
 .movies-cards__items-loading-button {
@@ -75,6 +79,7 @@
 .movies-cards__items-loading-button:hover {
   opacity: 0.7;
   cursor: pointer;
+  /* background-color: #EBEBEB; */
 }
 
 

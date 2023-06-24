@@ -1,14 +1,17 @@
 import React from 'react'
 import './SavedMovies.css'
 import SearchForm from '../SearchForm/SearchForm';
-import Preloader from '../Preloader/Preloader';
 import MoviesCardList from '../MoviesCardList/MoviesCardList';
 import Footer from '../Footer/Footer';
+import MovieNotFound from '../MovieNotFound/MovieNotFound';
 
 function SavedMovies( { 
-  isLoading,
-  onShowPreloader,
   movieArr,
+  onSearchSavedMovie,
+  searchedSavedMovieName,
+  onShortSavedMoviesFilter,
+  isFilterSavedMoviesActive,
+  isSavedMovieFound,
   onSaveMovie,
   savedMovies,
   onRemoveSavedMovie
@@ -17,12 +20,13 @@ function SavedMovies( {
   return (
     <>
       <section className="saved-movies">
-        <SearchForm 
-          onShowPreloader={onShowPreloader}
-          // onShortMovieFilter={onShortMovieFilter}
-          // isFilterActive={isFilterActive}
+        <SearchForm
+          onSearchMovie={onSearchSavedMovie}
+          searchedMovieName={searchedSavedMovieName}
+          onShortMovieFilter={onShortSavedMoviesFilter}
+          isFilterActive={isFilterSavedMoviesActive}
         />
-        {isLoading && <Preloader />}
+        {!isSavedMovieFound && <MovieNotFound text="Не найдено" />}
         <div className="saved-movies__line"></div>
         <MoviesCardList 
           movieArr={movieArr}

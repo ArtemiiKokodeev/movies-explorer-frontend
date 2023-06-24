@@ -2,7 +2,7 @@ import { React } from 'react';
 import './MoviesCard.css'
 
 function MoviesCard( { 
-  movie, 
+  movie,
   onSaveMovie, 
   savedMovies,
   onRemoveSavedMovie,
@@ -11,15 +11,15 @@ function MoviesCard( {
 } ) {
 
   function handleSaveMovie() {
-    !isSaved ? onSaveMovie(movie) : onRemoveSavedMovie(movie);
+    !isSaved ? onSaveMovie(movie) 
+    : movie._id ? onRemoveSavedMovie(movie)
+    : onRemoveSavedMovie(movieIdOfSearchedMovie)
   }
 
   const idKind = movieIdKind === "movieId" ? movie.movieId : movie.id; // формат id из allMovies или savedMovies
   const isSaved = savedMovies.some(i => i.movieId === idKind); // сохранен ли фильм
-  const movieSaveButtonClassName = ( 
-    `movie__save-icon ${isSaved && "movie__save-icon_saved"}`
-  ); // смена иконки сохранения
-
+  const movieSaveButtonClassName = (`movie__save-icon ${isSaved && "movie__save-icon_saved"}`); // смена иконки сохранения
+  const movieIdOfSearchedMovie = savedMovies.find(i => i.movieId === movie.id) // найти фильм для удаления из сохранненных на странице /movies
 
   return (
     <li className="movie">

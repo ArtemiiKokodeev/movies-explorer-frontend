@@ -4,7 +4,9 @@ import './MoviesCardList.css'
 import MovieCard from '../MoviesCard/MoviesCard';
 
 function MovieCardList( { 
-  movieArr, 
+  movieArr,
+  isElseButtonShown,
+  onShowMoreMovies,
   onSaveMovie, 
   savedMovies,
   onRemoveSavedMovie,
@@ -25,8 +27,9 @@ function MovieCardList( {
             />
           ))} 
         </ul> 
-        <div className="movies-cards__button-container">
-          <button className="movies-cards__items-loading-button" type="button" name="submitButton">Ещё</button>
+        <div className={`movies-cards__button-container ${isElseButtonShown && "movies-cards__button-container_active"}`}>
+          <button className="movies-cards__items-loading-button" type="button" name="submitButton"
+            onClick={onShowMoreMovies}>Ещё</button>
         </div>
       </div>
     )

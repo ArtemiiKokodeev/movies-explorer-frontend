@@ -18,37 +18,72 @@ function App() {
   const [windowSize, setWindowSize] = useState([window.innerWidth, window.innerHeight]); // текущий размер окна
   const [loggedIn, setLoggedIn] = useState(false); // авторизован ли пользователь
   const [currentUser, setCurrentUser] = useState({}); // текущий авторизованный пользователь
+
+  const [isLoading, setIsLoading] = useState(false); // стейт для отображения/скрытия прелоадера
+  const [isMoviesLoadingError, setIsMoviesLoadingError] = useState(false); // стейт ошибки при загрузки фильмов с сервиса api beatfilm-movies 
   const [isApiError, setIsApiError] = useState(false); // стейт ответа при обращении к API
   const [apiErrorText, setApiErrorText] = useState(""); // текст ответа при обращении к API
-  const [isLoading, setIsLoading] = useState(false); // стейт для отображения/скрытия прелоадера
+
   const [allMovies, setAllMovies] = useState([]); // все фильмы с сервиса api beatfilm-movies
-  const [searchedMovieName, setSearchedMovieName] = useState(""); // введенное в поиск название фильма
-  const [isFilterActive, setIsFilterActive] = useState(() => { // стейт фильтра короткометражек при поиске, сохраняется в LocalStorage
-    const savedItem = localStorage.getItem("filter");
-    const parsedItem = JSON.parse(savedItem);
-    return parsedItem || false;
-  }); 
-  const [searchedMovies, setSearchedMovies] = useState(() => { // стейт массива найденных фильмов, сохраняется в LocalStorage
-    const savedItem = localStorage.getItem("searched-movies");
-    const parsedItem = JSON.parse(savedItem);
-    return parsedItem || [];
-  }); 
+  const [searchedMovieName, setSearchedMovieName] = useState(getItemFromLocalStorage("movie-name") || ""); // стейт введенного в поиск название фильма
+  const [isFilterActive, setIsFilterActive] = useState(getItemFromLocalStorage("filter-short-movies") || false); // стейт фильтра короткометражек при поиске
+  const [searchedMovies, setSearchedMovies] = useState([]); // стейт массива найденных фильмов
+  const [isMovieFound, setIsMovieFound] = useState(true); // найдено ли что-то в массиве фильмов
+  const [isElseButtonShown, setIsElseButtonShown] = useState(false);
+  
+  // стейт с массивом показанных в данный момент пользователю фильмов после поиска
+  const [shownMovies, setShownMovies] = useState(getItemFromLocalStorage("shown-searched-movies") || []);
+
+  // константа - показывает, сколько фильмов отобразить в первый раз после поиска в зависимости от размера экрана
+  const moviesNumbertoShowFirstTime = window.innerWidth > 1278 ? 12 : window.innerWidth < 767 ? 5 : 8;
+  
+  // константа - показывает, сколько фильмов отобразить в первый раз после поиска в зависимости от размера экрана
+  const moviesNumbertoShowElse = window.innerWidth > 1278 ? 3 : 2;
+
+  // стейт с количеством показанных на данный момент фильмов
+  const [shownMoviesNumber, setShownMoviesNumber] = useState(moviesNumbertoShowFirstTime);
 
   const [savedMovies, setSavedMovies] = useState([]); // стейт массива сохраненных фильмов пользователя
-
-  // сохранение в стейт массива сохраненных фильмов текущего пользователя
-  useEffect(() => {
-    loggedIn && handleGetSavedMovies();
-  }, [loggedIn])
+  const [searchedSavedMovieName, setSearchedSavedMovieName] = useState(getItemFromLocalStorage("savedmovie-name") || ""); // введенное в поиск название сохраненного фильма
+  const [isFilterSavedMoviesActive, setIsFilterSavedMoviesActive] = useState(getItemFromLocalStorage("filter-short-savedmovies") || false); // стейт фильтра короткометражек /saved-movies при поиске
+  const [searchedSavedMovies, setSearchedSavedMovies] = useState(getItemFromLocalStorage("searched-savedmovies") || []); // стейт массива найденных сохраненных фильмов
+  const [isSavedMovieFound, setIsSavedMovieFound] = useState(true); // найдено ли что-то в массиве сохраненных фильмов
 
   // переменная с массивом найденных фильмов по введенному слову searchedMovieName,
   // которая сохраняется в стейт searchedMovies и в LocalStorage
-  const searchedMoviesArr = allMovies.filter(
-    movie => movie.nameRU.toLowerCase().includes(searchedMovieName.toLowerCase())
-  );
+  const searchedMoviesArr = allMovies.filter(movie => movie.nameRU.toLowerCase().includes(searchedMovieName.toLowerCase()));
   
-  // переменная с массивом найденных фильмов и отбором по короткометражкам,
+  // переменная с массивом найденных фильмов и c отбором по короткометражкам,
   const shortMovieFilterArr = searchedMovies.filter(movie => movie.duration <= 40);
+
+  // переменная с массивом найденных сохраненных фильмов и c отбором по короткометражкам,
+  const shortSavedMovieFilterArr = searchedSavedMovies.filter(movie => movie.duration <= 40);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    searchedMovies.length > 0 && handleShowSearchedMoviesWithWindowSize();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchedMovies])
+
+  // если результат поиска выдал фильмы, то не показывать "Не найдено"
+  useEffect(() => {
+    if (searchedMovies.length > 0) {
+      setIsMovieFound(true) 
+    }
+  }, [searchedMovies])
+
+  // если результат поиска выдал сохраненные фильмы, то не показывать "Не найдено"
+  useEffect(() => {
+    if (searchedSavedMovies.length > 0) {
+      setIsSavedMovieFound(true) 
+    }
+  }, [searchedSavedMovies])
+
+  // получение и сохранение в стейт массива сохраненных фильмов текущего пользователя
+  useEffect(() => {
+    loggedIn && handleGetSavedMovies();
+  }, [loggedIn])
 
   // сохранение массива найденных фильмов в стейт searchedMovies при первом поиске с запросом к api beatfilm-movies
   useEffect(() => {
@@ -58,15 +93,35 @@ function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [allMovies])
 
+  // сохранение в LocalStorage стейта введеного в поиск названия фильма 
+  useEffect(() => {
+    loggedIn && localStorage.setItem('movie-name', JSON.stringify(searchedMovieName));
+  }, [searchedMovieName, loggedIn]);
+
+  // сохранение в LocalStorage стейта введеного в поиск названия сохраненнго фильма 
+  useEffect(() => {
+    loggedIn && localStorage.setItem('savedmovie-name', JSON.stringify(searchedSavedMovieName));
+  }, [searchedSavedMovieName, loggedIn]);
+
+  // сохранение в LocalStorage стейта массива найденных и показанных фильмов 
+  useEffect(() => {
+    loggedIn && localStorage.setItem('shown-searched-movies', JSON.stringify(shownMovies));
+  }, [shownMovies, loggedIn]);
+
+  // сохранение в LocalStorage стейта массива найденных сохраненных фильмов (всех, и неважно, включен ли фильтр по короткометражкам)
+  useEffect(() => {
+    loggedIn && localStorage.setItem('searched-savedmovies', JSON.stringify(searchedSavedMovies));
+  }, [searchedSavedMovies, loggedIn]);
+
   // сохранение в LocalStorage стейта фильтра короткометражек при поиске
   useEffect(() => {
-    loggedIn && localStorage.setItem('filter', JSON.stringify(isFilterActive));
+    loggedIn && localStorage.setItem('filter-short-movies', JSON.stringify(isFilterActive));
   }, [isFilterActive, loggedIn]);
 
-  // сохранение в LocalStorage стейта массива найденных фильмов (всех, и неважно, включен ли фильтр по короткометражкам)
+  // сохранение в LocalStorage стейта фильтра сохраненных короткометражек при поиске
   useEffect(() => {
-    loggedIn && localStorage.setItem('searched-movies', JSON.stringify(searchedMovies));
-  }, [searchedMovies, loggedIn]);
+    loggedIn && localStorage.setItem('filter-short-savedmovies', JSON.stringify(isFilterSavedMoviesActive));
+  }, [isFilterSavedMoviesActive, loggedIn]);
 
   // сохранение в стейт данных текущего авторизованного пользователя
   useEffect(() => {
@@ -95,10 +150,8 @@ function App() {
       window.removeEventListener('resize', handleWindowResize);
     };
   }, []);
-  
-  const navigate = useNavigate();
 
-    // API FUNCTIONS START //
+    ///// API FUNCTIONS START /////
 
   // регистрация пользователя (при успехе - автоматическая авторизация и редирект на /movies)
   function handleRegister(name, email, password) {
@@ -132,6 +185,7 @@ function App() {
           localStorage.setItem("jwt", data.token);
           setLoggedIn(true);
           setIsApiError(false);
+          setSearchedMovies(savedMovies);
           handleNavigateToMovies();
         } 
       })
@@ -190,6 +244,7 @@ function App() {
     })
     .catch(() => {
       console.log("Во время запроса произошла ошибка. Возможно, проблема с соединением или сервер недоступен. Подождите немного и попробуйте ещё раз")
+      setIsMoviesLoadingError(true);
     })
   };
 
@@ -228,38 +283,102 @@ function App() {
       console.log(`Ошибка при удалении фильма из списка сохраненных: ${err}`)
     });
   };
-
-    // API FUNCTIONS END //
+    ///// API FUNCTIONS END /////
 
   // редирект на страницу /movies после успешной регистрации и автоматической авторизации
   function handleNavigateToMovies() {
     navigate('/movies', {replace: true});
   }
 
+  // функция выхода из профиля с очисткой localStorage и редиректом на страницу /
   function handleSignOut() {
+    localStorage.setItem('searched-movies', JSON.stringify([]));
+    localStorage.setItem('searched-savedmovies', JSON.stringify([]));
     localStorage.clear();
     setLoggedIn(false);
     navigate('/', {replace: true});
   }
 
-  // сабмит формы поиска фильма по введенному названию и его сохранение в стейт
-  // а также сохранение в стейт searchedMovies массива найденных фильмов
-  function handleSearchMoviebyName(movieName) {
+  // функция получения из LocalStorage значений поиска, найденных фильмов и состояния фильтра короткометражек
+  function getItemFromLocalStorage(itemName) {
+    const savedItem = localStorage.getItem(itemName);
+    const parsedItem = JSON.parse(savedItem);
+    return parsedItem; 
+  } 
+
+  // сабмит формы поиска фильма по введенному названию
+  // при первом поиске - показ прелоадера и запрос к api beatfilms для получения полного массива фильмов
+  // сохранение введенного названия в стейт
+  // формирование и сохранение в стейт searchedMovies массива найденных фильмов
+  // если результат поиска не выдал фильмы, то показывать "Не найдено" и очистить массив 
+  function handleSearchMovie(movieName) {
+    if (allMovies.length === 0) {
+      setIsMoviesLoadingError(false);
+      handleShowPreloader();
+      handleGetAllMovies();
+    }
     setSearchedMovieName(movieName);
     const searchedMoviesArr = allMovies.filter(
       movie => movie.nameRU.toLowerCase().includes(movieName.toLowerCase())
     );
     setSearchedMovies(searchedMoviesArr);
+
+    if (searchedMoviesArr.length === 0) {
+      setIsMovieFound(false);
+      setShownMovies([]);
+    }
   }
 
-  // включение прелоадера до полной загрузки карточек
+  // сабмит формы поиска сохраненного фильма по введенному названию
+  // сохранение введенного названия в стейт
+  // формирование и сохранение в стейт searchedMovies массива найденных фильмов
+  // если результат поиска не выдал фильмы, то показывать "Не найдено"  
+  function handleSearchSavedMovie(movieName) {
+    setSearchedSavedMovieName(movieName);
+    const searchedSavedMoviesArr = savedMovies.filter(
+      movie => movie.nameRU.toLowerCase().includes(movieName.toLowerCase())
+    );
+    setSearchedSavedMovies(searchedSavedMoviesArr);
+    if (searchedSavedMoviesArr.length === 0) {
+      setIsSavedMovieFound(false) 
+    }
+  }
+
+  // включение прелоадера до полной загрузки карточек с api beatfilms
   function handleShowPreloader() {
     setIsLoading(true);
   }
 
-  // слушатель onChange изменения переключателя фильтра по короткометражкам
+  // сколько найденных фильмов отобразить сразу, в зависимости от размера экрана
+  function handleShowSearchedMoviesWithWindowSize() {
+    if (searchedMovies.length > moviesNumbertoShowFirstTime) {
+      setIsElseButtonShown(true);
+      setShownMoviesNumber(moviesNumbertoShowFirstTime);
+      setShownMovies(searchedMovies.slice(0, moviesNumbertoShowFirstTime));
+    } else {
+      setIsElseButtonShown(false);
+      setShownMovies(searchedMovies);
+    }
+  }
+
+  function handleShowMoreMoviesButton() {
+    if ((searchedMovies.length - shownMoviesNumber) > moviesNumbertoShowElse) {
+      setShownMovies(searchedMovies.slice(0, shownMoviesNumber + moviesNumbertoShowElse));
+      setShownMoviesNumber(shownMoviesNumber + moviesNumbertoShowElse);
+    } else {
+      setIsElseButtonShown(false);
+      setShownMovies(searchedMovies);
+    }
+  }
+
+  // слушатель onChange изменения переключателя фильтра по короткометражкам /movies
   function handleShortMovieFilterChange() {
     setIsFilterActive(!isFilterActive);
+  }
+
+  // слушатель onChange изменения переключателя фильтра по короткометражкам /saved-movies
+  function handleShortSavedMovieFilterChange() {
+    setIsFilterSavedMoviesActive(!isFilterSavedMoviesActive);
   }
 
   return (
@@ -287,25 +406,32 @@ function App() {
                 loggedIn={loggedIn}
                 onGetAllMovies={handleGetAllMovies}
                 allMovies={allMovies}
-                searchedMovies={searchedMovies}
                 isLoading={isLoading}
+                isMoviesLoadingError={isMoviesLoadingError}
                 onShowPreloader={handleShowPreloader}
-                onSearchMovie={handleSearchMoviebyName}
+                onSearchMovie={handleSearchMovie}
+                searchedMovieName={searchedMovieName}
                 onShortMovieFilter={handleShortMovieFilterChange}
                 isFilterActive={isFilterActive}
+                isFound={isMovieFound}
+                isElseButtonShown={isElseButtonShown}
+                onShowMoreMovies={handleShowMoreMoviesButton}
                 onSaveMovie={handleSaveMovies}
                 savedMovies={savedMovies}
                 onRemoveSavedMovie={handleRemoveSavedMovie}
-                movieArr={
-                  isFilterActive ? shortMovieFilterArr : searchedMovies
-                }
+                movieArr={isFilterActive ? shortMovieFilterArr : shownMovies}
                 component={Movies}
               />}
             />
             <Route exact path="saved-movies" element={
               <ProtectedRoute
                 loggedIn={loggedIn}
-                movieArr={savedMovies}
+                movieArr={isFilterSavedMoviesActive ? shortSavedMovieFilterArr : searchedSavedMovies}
+                onSearchSavedMovie={handleSearchSavedMovie}
+                searchedSavedMovieName={searchedSavedMovieName}
+                onShortSavedMoviesFilter={handleShortSavedMovieFilterChange}
+                isFilterSavedMoviesActive={isFilterSavedMoviesActive}
+                isSavedMovieFound={isSavedMovieFound}
                 onSaveMovie={handleSaveMovies}
                 savedMovies={savedMovies}
                 onRemoveSavedMovie={handleRemoveSavedMovie}

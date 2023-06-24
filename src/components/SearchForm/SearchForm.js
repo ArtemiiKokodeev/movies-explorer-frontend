@@ -1,4 +1,4 @@
-import { React, useState, useEffect } from 'react';
+import { React, useState } from 'react';
 import './SearchForm.css';
 import searchIcon from '../../images/search-icon.svg';
 import searchButton from '../../images/find.svg';
@@ -6,23 +6,13 @@ import verticalLine from '../../images/vertical-line.png';
 import FilterSearch from '../FilterSearch/FilterSearch'
 
 function SearchForm( { 
-  onGetAllMovies, 
-  allMovies,
   onSearchMovie, 
-  onShowPreloader,
+  searchedMovieName,
   onShortMovieFilter,
-  isFilterActive } ) 
-  {
+  isFilterActive
+} ) {
 
-  const [formValue, setFormValue] = useState(() => {
-    const savedItem = localStorage.getItem("movie");
-    const parsedItem = JSON.parse(savedItem);
-    return { movie: parsedItem || "" };
-}); // стейт введенного в поиск названия фильма, сохраняется в LocalStorage
-  
-  useEffect(() => {
-    localStorage.setItem('movie', JSON.stringify(formValue.movie));
-  }, [formValue.movie]);
+  const [formValue, setFormValue] = useState({ movie: searchedMovieName || "" });
 
   const handleChange = (e) => {
     const {name, value} = e.target;
@@ -32,26 +22,12 @@ function SearchForm( {
     });
   }
 
-  // получить один раз все фильмы с api.beatfilm и сохранить в переменной allMovies
-  function handleGetAllMoviesOnce() {
-    if (allMovies.length === 0) {
-      onGetAllMovies();
-      onShowPreloader();
-    } else {
-      return;
-    }
-  }
-
   const handleSubmit = (e) => {
     e.preventDefault();
-    handleGetAllMoviesOnce();
     onSearchMovie(formValue.movie);
   }
 
   return (
-    
-    // Routes
-
     <form name="search" className="search" onSubmit={handleSubmit}>
       <div className="search__bar">
         <div className="search__container">
