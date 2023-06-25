@@ -1,26 +1,27 @@
-import { React, useState } from 'react';
+import { React } from 'react';
+import { useForm } from 'react-hook-form';
 import './Login.css'
 import UserFormComponent from '../UserFormComponent/UserFormComponent';
+import * as Validation from '../UserFormValidation/UserFormValidation';
+import UserFormValidation from '../UserFormValidation/UserFormValidation';
 
 function Login( { onLogin, isApiError, apiErrorText } ) {
 
-  const [formValue, setFormValue] = useState({
-    email: '',
-    password: ''
-  })
-
-  const handleChange = (e) => {
-    const {name, value} = e.target;
-
-    setFormValue({
-      ...formValue,
-      [name]: value
-    });
-  }
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    onLogin(formValue.email, formValue.password);
+  const { 
+    register,
+    formState: {
+      errors,
+      isValid
+    },
+    handleSubmit,
+    reset
+  } = useForm({
+    mode: "onChange"
+  });
+  
+  const onSubmit = (data) => {
+    onLogin(data.email, data.password);
+    reset();
   }
 
   return (
@@ -29,7 +30,9 @@ function Login( { onLogin, isApiError, apiErrorText } ) {
         title="Рады видеть!"
         name="userLoginForm"
         submitButtonText="Войти"
-        onSubmit={handleSubmit}
+        onSubmit={onSubmit}
+        handleSubmit={handleSubmit}
+        isSubmitButtonActive={isValid}
         redirectQuestionText="Еще не зарегистрированы?"
         redirectRoute="/signup"
         redirectActionText="Регистрация"
@@ -39,32 +42,21 @@ function Login( { onLogin, isApiError, apiErrorText } ) {
           <div>
             <p className="user-form__input-name">E-mail</p>
             <label className="user-form__input-field">
-              <input 
-                id="email" 
-                name="email" 
-                type="email" 
-                placeholder=""
-                value={formValue.email || ''} 
-                onChange={handleChange}
-                className="user-form__input user-form__input_type_email" 
-                required  
+              <input className="user-form__input" type="email" 
+                {...register("email", Validation.formConfig.email)} 
               />
-              <span className="user-form__text-error email-text-error"></span>
-            </label>    
+              {errors?.email && <UserFormValidation 
+                errorMessage={errors?.email?.message || "Ошибка! Что-то пошло не так..."} />}
+            </label>
+
             <p className="user-form__input-name">Пароль</p>
             <label className="user-form__input-field">
-              <input 
-                id="password" 
-                name="password" 
-                type="password" 
-                placeholder=""
-                value={formValue.password || ''} 
-                onChange={handleChange}
-                className="user-form__input user-form__input_type_password" 
-                required
+              <input className="user-form__input" type="password"
+                {...register("password", Validation.formConfig.password)} 
               />
+              {errors?.password && <UserFormValidation 
+                errorMessage={errors?.password?.message || "Ошибка! Что-то пошло не так..."} />}
             </label>
-            <span className="user-form__text-error password-text-error"></span>
           </div>
         )}
       />

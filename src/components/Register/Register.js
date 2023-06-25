@@ -1,28 +1,29 @@
-import { React, useState } from 'react';
+import { React } from 'react';
+import { useForm } from 'react-hook-form';
 import './Register.css'
 import UserFormComponent from '../UserFormComponent/UserFormComponent';
+import * as Validation from '../UserFormValidation/UserFormValidation';
+import UserFormValidation from '../UserFormValidation/UserFormValidation';
 
-function Register( { onRegister, isApiError, apiErrorText } ) {
+function Register( { onRegister, isApiError, apiErrorText, isSuccessApiRequest } ) {
 
-  const [formValue, setFormValue] = useState({
-    name: '',
-    email: '',
-    password: ''
-  })
+  const { 
+    register,
+    formState: {
+      errors,
+      isValid
+    },
+    handleSubmit,
+    reset
+  } = useForm({
+    mode: "onChange"
+  });
 
-  const handleChange = (e) => {
-    const {name, value} = e.target;
-
-    setFormValue({
-      ...formValue,
-      [name]: value
-    });
+  const onSubmit = (data) => {
+    onRegister(data.name, data.email, data.password);
+    reset();
   }
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    onRegister(formValue.name, formValue.email, formValue.password);
-  }
 
   return (
     <div className="register">
@@ -30,55 +31,42 @@ function Register( { onRegister, isApiError, apiErrorText } ) {
         title="Добро пожаловать!"
         name="userRegisterForm"
         submitButtonText="Зарегистрироваться"
-        onSubmit={handleSubmit}
+        onSubmit={onSubmit}
+        handleSubmit={handleSubmit}
+        isSubmitButtonActive={isValid}
         redirectQuestionText="Уже зарегистрированы?"
         redirectRoute="/signin"
         redirectActionText="Войти"
         isApiError={isApiError}
         apiErrorText={apiErrorText}
+        isSuccessApiRequest={isSuccessApiRequest}
         children={(
           <div>
             <p className="user-form__input-name">Имя</p>
             <label className="user-form__input-field">
-              <input 
-                id="name" 
-                name="name" 
-                type="text" 
-                placeholder=""
-                value={formValue.name || ''} 
-                onChange={handleChange}
-                className="user-form__input user-form__input_type_name" 
-                required  
+              <input className="user-form__input"
+                {...register("name", Validation.formConfig.name)}
               />
-              <span className="user-form__text-error name-text-error"></span>
+              {errors?.name && <UserFormValidation 
+                errorMessage={errors?.name?.message || "Ошибка! Что-то пошло не так..."} />}
             </label>
+
             <p className="user-form__input-name">E-mail</p>
             <label className="user-form__input-field">
-              <input 
-                id="email" 
-                name="email" 
-                type="email" 
-                placeholder=""
-                value={formValue.email || ''} 
-                onChange={handleChange}
-                className="user-form__input user-form__input_type_email" 
-                required  
+              <input className="user-form__input" type="email" 
+                {...register("email", Validation.formConfig.email)} 
               />
-              <span className="user-form__text-error email-text-error"></span>
+              {errors?.email && <UserFormValidation 
+                errorMessage={errors?.email?.message || "Ошибка! Что-то пошло не так..."} />}
             </label>    
+
             <p className="user-form__input-name">Пароль</p>
             <label className="user-form__input-field">
-              <input 
-                id="password" 
-                name="password" 
-                type="password" 
-                placeholder=""
-                value={formValue.password || ''} 
-                onChange={handleChange}
-                className="user-form__input user-form__input_type_password" 
-                required
+              <input className="user-form__input" type="password"
+                {...register("password", Validation.formConfig.password)} 
               />
-              <span className="user-form__text-error password-text-error"></span>
+              {errors?.password && <UserFormValidation 
+                errorMessage={errors?.password?.message || "Ошибка! Что-то пошло не так..."} />}
             </label>
           </div>
         )}

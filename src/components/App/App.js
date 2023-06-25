@@ -17,7 +17,9 @@ import Profile from '../Profile/Profile';
 function App() {
   const [windowSize, setWindowSize] = useState([window.innerWidth, window.innerHeight]); // текущий размер окна
   const [loggedIn, setLoggedIn] = useState(false); // авторизован ли пользователь
+  const [isSuccessApiRequest, setIsSuccessApiRequest] = useState(false);
   const [currentUser, setCurrentUser] = useState({}); // текущий авторизованный пользователь
+  const [isEditing, setIsEditing] = useState(false); // переключение в режим редактирования профиля
 
   const [isLoading, setIsLoading] = useState(false); // стейт для отображения/скрытия прелоадера
   const [isMoviesLoadingError, setIsMoviesLoadingError] = useState(false); // стейт ошибки при загрузки фильмов с сервиса api beatfilm-movies 
@@ -161,8 +163,12 @@ function App() {
         if (res.token) {
           localStorage.setItem("jwt", res.token);
           setLoggedIn(true);
-          handleNavigateToMovies();
           setIsApiError(false);
+          setIsSuccessApiRequest(true);
+          setTimeout(function() {
+            handleNavigateToMovies();
+            setIsSuccessApiRequest(false);
+          }, 2500)
         }
       })
       .catch((err) => {
@@ -221,18 +227,24 @@ function App() {
   function handleUpdateUserInfo(userInfo) {
     MainApi.updateUserInfo(userInfo)
     .then((res) => {
-      console.log(res);
       setIsApiError(false);
       setCurrentUser(res.data);
+      setIsSuccessApiRequest(true);
+      setTimeout(function() {
+        setIsSuccessApiRequest(false);
+      }, 2500)
     })
     .catch((err) => {
-      console.log(err)
       setIsApiError(true);
       setApiErrorText(
         err === "Ошибка: 409 Conflict" ? "Пользователь с таким email уже существует." 
         : "При обновлении профиля произошла ошибка."
       );
     })
+  }
+
+  function handleChangeEditProfileMode(boolean) {
+    setIsEditing(boolean);
   }
 
   // получение всех фильмов с сервиса api beatfilm-movies при первом поиске по названию
@@ -389,6 +401,7 @@ function App() {
             onRegister={handleRegister}
             isApiError={isApiError}
             apiErrorText={apiErrorText} 
+            isSuccessApiRequest={isSuccessApiRequest}
           />} /> 
           <Route exact path="/signin" element={<Login 
             onLogin={handleLogin}
@@ -442,7 +455,10 @@ function App() {
               <ProtectedRoute
                 loggedIn={loggedIn}
                 currentUser={currentUser}
+                isEditing={isEditing}
+                onChangeEditProfileMode={handleChangeEditProfileMode}
                 onUpdateUserInfo={handleUpdateUserInfo}
+                isSuccessApiRequest={isSuccessApiRequest}
                 isApiError={isApiError}
                 apiErrorText={apiErrorText}
                 onSignOut={handleSignOut}

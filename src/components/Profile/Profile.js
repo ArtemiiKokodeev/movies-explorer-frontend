@@ -1,107 +1,112 @@
-import { React, useEffect, useState } from 'react';
+import { React, useState, useEffect } from 'react';
+import { useForm } from 'react-hook-form';
 import './Profile.css';
 import Error from '../Error/Error';
+import * as Validation from '../UserFormValidation/UserFormValidation';
+import UserFormValidation from '../UserFormValidation/UserFormValidation';
 
 function Profile( { 
-  currentUser, 
+  currentUser,
+  isEditing,
+  onChangeEditProfileMode, 
   onUpdateUserInfo, 
+  isSuccessApiRequest,
   isApiError,
   apiErrorText,
   onSignOut } ) {
 
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("")
+  const { register, formState: { errors, isValid }, handleSubmit} = useForm({ mode: "onChange" });
+
+  const [name, setName] = useState(currentUser.name);
+  const [email, setEmail] = useState(currentUser.email);
 
   const [isDisabledInput, setIsDisabledInput] = useState(true);
-  const [isEditing, setIsEditing] = useState(false);
   const [isDisabledButton, setIsDisabledButton] = useState(false);
 
+  const { required: requiredName, pattern: patternName, minLength: minLengthName, maxLength: maxLengthName 
+  } = Validation.formConfig.name;
+  const { required: requiredEmail, pattern: patternEmail} = Validation.formConfig.email;
+
   useEffect(() => {
-    if (!name && !email) {
-      setIsDisabledButton(true);
-    } else if (name === currentUser.name && email === currentUser.email) {
+    if (name === currentUser.name && email === currentUser.email) {
       setIsDisabledButton(true);
     } else {
       setIsDisabledButton(false);
     }
   }, [name, email, currentUser])
 
-  function handleNameChange(e) {
-    setName(e.target.value);
-  }
-
-  function handleEmailChange(e) {
-    setEmail(e.target.value);
-  }
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    onUpdateUserInfo({
-      name: name,
-      email: email,
-    });
-    // если ошибка:
-    // не скрываем кнопку сохранить
-    // дисейблим кнопку сохранить
-    // не заменяем данные в инпутах
-    // выводим текст ошибки
-  }
-
   useEffect(() => {
     !isApiError &&
       setName(currentUser.name);
       setEmail(currentUser.email);
-      setIsEditing(false);
+      onChangeEditProfileMode(false);
       setIsDisabledInput(true);
       // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentUser])
 
   useEffect(() => {
-    setIsDisabledButton(true);
+    isApiError && setIsDisabledButton(true);
   }, [isApiError])
 
   function handleEditButtonClick() {
     setIsDisabledInput(false);
-    setIsEditing(true);
+    onChangeEditProfileMode(true);
+    setIsDisabledButton(true);
+  }
+
+  const onSubmit = (data) => {
+    onUpdateUserInfo({
+      name: data.name,
+      email: data.email,
+    });
   }
 
     return (
       <div className="profile">
         <h1 className="profile__title">Привет, {currentUser.name}!</h1>
-        <form name="profile" className="profile__container" onSubmit={handleSubmit}>
+        <form name="profile" className="profile__container" onSubmit={handleSubmit(onSubmit)}>
           <div className="profile__input-container">
             <div>
               <div className="profile__info-container">
-              <p className="profile__input-name">Имя</p>
-              <input 
-                  id="name" 
-                  name="name" 
-                  type="text" 
-                  placeholder=""
-                  value={name || ""} 
-                  onChange={handleNameChange}
-                  className="profile__input profile__input_type_name" 
-                  required
-                  disabled={isDisabledInput}
-                />
+                <div className="profile__info">
+                  <p className="profile__input-name">Имя</p>
+                  <input className="profile__input"
+                    disabled={isDisabledInput}
+                    {...register("name", {
+                      required: requiredName, 
+                      pattern: patternName, 
+                      minLength: minLengthName, 
+                      maxLength: maxLengthName,
+                      value: name,
+                      onChange: (e) => 
+                        setName(e.target.value)
+                    })} />
+                </div>
+                {errors?.name && <UserFormValidation 
+                  errorMessage={errors?.name?.message || "Ошибка! Что-то пошло не так..."} />}
               </div>
               <div className="profile__line"></div>
               <div className="profile__info-container">
-              <p className="profile__input-name">E-mail</p>
-              <input 
-                  id="email" 
-                  name="email" 
-                  type="email"
-                  placeholder=""
-                  value={email || ""}  
-                  onChange={handleEmailChange}
-                  className="profile__input profile__input_type_email" 
-                  required
-                  disabled={isDisabledInput}
-                />
+                <div className="profile__info">
+                  <p className="profile__input-name">E-mail</p>
+                  <input className="profile__input" 
+                    disabled={isDisabledInput}
+                    {...register("email", {
+                      required: requiredEmail, 
+                      pattern: patternEmail,
+                      value: email,
+                      onChange: (e) => 
+                        setEmail(e.target.value)
+                    })} />
+                </div>
+                {errors?.email && <UserFormValidation 
+                  errorMessage={errors?.email?.message || "Ошибка! Что-то пошло не так..."} />}
               </div>
             </div>
             <Error isApiError={isApiError} apiErrorText={apiErrorText} />
+            <p className={`profile__success-update ${isSuccessApiRequest && "profile__success-update_active"}`}>
+              Профиль успешно обновлен!
+            </p>
           </div>
           {!isEditing ?
             <>
@@ -109,8 +114,8 @@ function Profile( {
               <p onClick={onSignOut} className="profile__button profile__button_signout">Выйти из аккаунта</p>
             </>
           :
-            <button className={`profile__submit-button ${isDisabledButton && "profile__submit-button_disabled"}`}
-              type="submit" name="submitButton" disabled={isDisabledButton}>
+            <button className={`profile__submit-button ${!isValid || isDisabledButton ? "profile__submit-button_disabled" : ''}`}
+              type="submit" name="submitButton" disabled={!isValid || isDisabledButton}>
               Сохранить
             </button>
           }
