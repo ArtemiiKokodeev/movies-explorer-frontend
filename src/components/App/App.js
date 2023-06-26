@@ -73,6 +73,7 @@ function App() {
 
   const navigate = useNavigate();
 
+  // запуск функции отображения результатов ПЕРВОГО поиска фильмов /movies
   useEffect(() => {
     searchedMovies.length > 0 && handleShowSearchedMoviesWithWindowSize();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -473,7 +474,6 @@ function App() {
             <Route exact path="profile" element={
               <ProtectedRoute
                 loggedIn={loggedIn}
-                currentUser={currentUser}
                 isEditing={isEditing}
                 onChangeEditProfileMode={handleChangeEditProfileMode}
                 onUpdateUserInfo={handleUpdateUserInfo}
