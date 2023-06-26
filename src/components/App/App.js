@@ -53,9 +53,9 @@ function App() {
   const [shownMoviesNumber, setShownMoviesNumber] = useState(moviesNumbertoShowFirstTime);
 
   const [savedMovies, setSavedMovies] = useState([]); // стейт массива сохраненных фильмов пользователя
-  const [searchedSavedMovieName, setSearchedSavedMovieName] = useState(getItemFromLocalStorage("savedmovie-name") || ""); // введенное в поиск название сохраненного фильма
-  const [isFilterSavedMoviesActive, setIsFilterSavedMoviesActive] = useState(getItemFromLocalStorage("filter-short-savedmovies") || false); // стейт фильтра короткометражек /saved-movies при поиске
-  const [searchedSavedMovies, setSearchedSavedMovies] = useState(getItemFromLocalStorage("searched-savedmovies") || []); // стейт массива найденных сохраненных фильмов
+  const [searchedSavedMovieName, setSearchedSavedMovieName] = useState(""); // введенное в поиск название сохраненного фильма
+  const [isFilterSavedMoviesActive, setIsFilterSavedMoviesActive] = useState(false); // стейт фильтра короткометражек /saved-movies при поиске
+  const [searchedSavedMovies, setSearchedSavedMovies] = useState([]); // стейт массива найденных сохраненных фильмов
   const [isSavedMovieFound, setIsSavedMovieFound] = useState(true); // найдено ли что-то в массиве сохраненных фильмов
 
   // переменная с массивом найденных фильмов по введенному слову searchedMovieName,
@@ -110,30 +110,15 @@ function App() {
     loggedIn && localStorage.setItem('movie-name', JSON.stringify(searchedMovieName));
   }, [searchedMovieName, loggedIn]);
 
-  // сохранение в LocalStorage стейта введеного в поиск названия сохраненнго фильма 
-  useEffect(() => {
-    loggedIn && localStorage.setItem('savedmovie-name', JSON.stringify(searchedSavedMovieName));
-  }, [searchedSavedMovieName, loggedIn]);
-
   // сохранение в LocalStorage стейта массива найденных и показанных фильмов 
   useEffect(() => {
     loggedIn && localStorage.setItem('shown-searched-movies', JSON.stringify(shownMovies));
   }, [shownMovies, loggedIn]);
 
-  // сохранение в LocalStorage стейта массива найденных сохраненных фильмов (всех, и неважно, включен ли фильтр по короткометражкам)
-  useEffect(() => {
-    loggedIn && localStorage.setItem('searched-savedmovies', JSON.stringify(searchedSavedMovies));
-  }, [searchedSavedMovies, loggedIn]);
-
   // сохранение в LocalStorage стейта фильтра короткометражек при поиске
   useEffect(() => {
     loggedIn && localStorage.setItem('filter-short-movies', JSON.stringify(isFilterActive));
   }, [isFilterActive, loggedIn]);
-
-  // сохранение в LocalStorage стейта фильтра сохраненных короткометражек при поиске
-  useEffect(() => {
-    loggedIn && localStorage.setItem('filter-short-savedmovies', JSON.stringify(isFilterSavedMoviesActive));
-  }, [isFilterSavedMoviesActive, loggedIn]);
 
   // сохранение в стейт данных текущего авторизованного пользователя
   useEffect(() => {
@@ -197,7 +182,7 @@ function App() {
           localStorage.setItem("jwt", data.token);
           setLoggedIn(true);
           setIsApiError(false);
-          setSearchedMovies(savedMovies);
+          // setSearchedMovies(savedMovies);
           handleNavigateToMovies();
         } 
       })
@@ -220,7 +205,6 @@ function App() {
         if (res) {
           // console.log(res)
           setLoggedIn(true);
-          // handleNavigateToMovies();
         }
       })
       .catch((err) => {
@@ -270,6 +254,7 @@ function App() {
     MainApi.getSavedMovies()
     .then((movies) => {
       setSavedMovies(movies);
+      setSearchedSavedMovies(movies);
     })
     .catch((error) => {
       console.log(`Ошибка при загрузке сохраненных фильмов: ${error}`)
@@ -292,7 +277,7 @@ function App() {
   function handleRemoveSavedMovie(movieInfo) {
     MainApi.removeSavedMovie(movieInfo._id)
     .then((res) => {
-      setSavedMovies((state) => state.filter(function (m) {
+      setSearchedSavedMovies((state) => state.filter(function (m) {
         return m !== movieInfo;
       }))
     })
@@ -309,8 +294,9 @@ function App() {
 
   // функция выхода из профиля с очисткой localStorage и редиректом на страницу /
   function handleSignOut() {
-    localStorage.setItem('searched-movies', JSON.stringify([]));
-    localStorage.setItem('searched-savedmovies', JSON.stringify([]));
+    setSearchedMovieName('');
+    setIsFilterActive(false);
+    setShownMovies([]);
     localStorage.clear();
     setLoggedIn(false);
     navigate('/', {replace: true});
@@ -463,7 +449,7 @@ function App() {
                 isElseButtonShown={isElseButtonShown}
                 onShowMoreMovies={handleShowMoreMoviesButton}
                 onSaveMovie={handleSaveMovies}
-                savedMovies={savedMovies}
+                savedMovies={searchedSavedMovies}
                 onRemoveSavedMovie={handleRemoveSavedMovie}
                 movieArr={isFilterActive ? shortMovieFilterArr : shownMovies}
                 component={Movies}
