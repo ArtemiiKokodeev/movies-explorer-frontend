@@ -20,13 +20,22 @@ function MoviesCard( {
   const isSaved = savedMovies.some(i => i.movieId === idKind); // сохранен ли фильм
   const movieSaveButtonClassName = (`movie__save-icon ${isSaved && "movie__save-icon_saved"}`); // смена иконки сохранения
   const movieIdOfSearchedMovie = savedMovies.find(i => i.movieId === movie.id) // найти фильм для удаления из сохранненных на странице /movies
+  const movieDuration = () => {
+    if (movie.duration < 60) {
+      return `${movie.duration}м`;
+    } else if (movie.duration === 60) {
+      return "1ч";
+    } else {
+      return `${Math.floor(movie.duration / 60)}ч ${movie.duration % 60}м`;
+    }
+  }
 
   return (
     <li className="movie">
       <div className="movie__container">
         <div className="movie__info-container">
           <h3 className="movie__title">{movie.nameRU}</h3>
-          <p className="movie__duration">{movie.duration}</p>
+          <p className="movie__duration">{movieDuration()}</p>
         </div>
         <button className={movieImageKind === "movie.image" ? "movie__delete-icon" :movieSaveButtonClassName} 
           type="button" onClick={handleSaveMovie} />

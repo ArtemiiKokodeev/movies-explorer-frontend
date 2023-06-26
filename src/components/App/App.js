@@ -13,6 +13,8 @@ import Main from '../Main/Main';
 import Movies from '../Movies/Movies';
 import SavedMovies from '../SavedMovies/SavedMovies';
 import Profile from '../Profile/Profile';
+import { shortMovieDuration, windowSizeBreakpoints, moviesNumberToShow
+} from '../../utils/constants'
 
 function App() {
   const [windowSize, setWindowSize] = useState([window.innerWidth, window.innerHeight]); // текущий размер окна
@@ -37,10 +39,15 @@ function App() {
   const [shownMovies, setShownMovies] = useState(getItemFromLocalStorage("shown-searched-movies") || []);
 
   // константа - показывает, сколько фильмов отобразить в первый раз после поиска в зависимости от размера экрана
-  const moviesNumbertoShowFirstTime = window.innerWidth > 1278 ? 12 : window.innerWidth < 767 ? 5 : 8;
+  const moviesNumbertoShowFirstTime = 
+    window.innerWidth > windowSizeBreakpoints.desktop ? moviesNumberToShow.desktop.firstSearch 
+    : window.innerWidth < windowSizeBreakpoints.tablet ? moviesNumberToShow.smartphone.firstSearch 
+    : moviesNumberToShow.tablet.firstSearch;
   
-  // константа - показывает, сколько фильмов отобразить в первый раз после поиска в зависимости от размера экрана
-  const moviesNumbertoShowElse = window.innerWidth > 1278 ? 3 : 2;
+  // константа - показывает, сколько фильмов отобразить после каждого нажатия кнопки "Еще"
+  const moviesNumbertoShowElse = 
+    window.innerWidth > windowSizeBreakpoints.desktop ? moviesNumberToShow.desktop.moreButton 
+    : moviesNumberToShow.tablet.moreButton;
 
   // стейт с количеством показанных на данный момент фильмов
   const [shownMoviesNumber, setShownMoviesNumber] = useState(moviesNumbertoShowFirstTime);
@@ -55,11 +62,14 @@ function App() {
   // которая сохраняется в стейт searchedMovies и в LocalStorage
   const searchedMoviesArr = allMovies.filter(movie => movie.nameRU.toLowerCase().includes(searchedMovieName.toLowerCase()));
   
-  // переменная с массивом найденных фильмов и c отбором по короткометражкам,
-  const shortMovieFilterArr = searchedMovies.filter(movie => movie.duration <= 40);
+  // переменная с массивом найденных фильмов и c отбором по короткометражкам ПРИ ПЕРВОМ ПОИСКЕ,
+  const shortMovieFilterArrFirstSearch = searchedMovies.filter(movie => movie.duration <= shortMovieDuration);
+
+  // переменная с массивом найденных фильмов и c отбором по короткометражкам при последующих поисках
+  const shortMovieFilterArr = shownMovies.filter(movie => movie.duration <= shortMovieDuration);
 
   // переменная с массивом найденных сохраненных фильмов и c отбором по короткометражкам,
-  const shortSavedMovieFilterArr = searchedSavedMovies.filter(movie => movie.duration <= 40);
+  const shortSavedMovieFilterArr = searchedSavedMovies.filter(movie => movie.duration <= shortMovieDuration);
 
   const navigate = useNavigate();
 
@@ -164,11 +174,7 @@ function App() {
           localStorage.setItem("jwt", res.token);
           setLoggedIn(true);
           setIsApiError(false);
-          setIsSuccessApiRequest(true);
-          setTimeout(function() {
-            handleNavigateToMovies();
-            setIsSuccessApiRequest(false);
-          }, 2500)
+          handleNavigateToMovies();
         }
       })
       .catch((err) => {
@@ -196,7 +202,6 @@ function App() {
         } 
       })
       .catch((err) => {
-        console.log(err);
         setIsApiError(true);
         setApiErrorText(
           err === "Ошибка: 401 Unauthorized" ? "Вы ввели неправильный логин или пароль." 
@@ -215,7 +220,7 @@ function App() {
         if (res) {
           // console.log(res)
           setLoggedIn(true);
-          handleNavigateToMovies();
+          // handleNavigateToMovies();
         }
       })
       .catch((err) => {
@@ -361,25 +366,50 @@ function App() {
     setIsLoading(true);
   }
 
-  // сколько найденных фильмов отобразить сразу, в зависимости от размера экрана
+  // сколько найденных фильмов отобразить ПРИ ПЕРВОМ ПОИСКЕ, 
+  // в зависимости от размера экрана и состояния фильтра короткометражек
   function handleShowSearchedMoviesWithWindowSize() {
-    if (searchedMovies.length > moviesNumbertoShowFirstTime) {
-      setIsElseButtonShown(true);
-      setShownMoviesNumber(moviesNumbertoShowFirstTime);
-      setShownMovies(searchedMovies.slice(0, moviesNumbertoShowFirstTime));
+    if (!isFilterActive) {
+      if (searchedMovies.length > moviesNumbertoShowFirstTime) {
+        setIsElseButtonShown(true);
+        setShownMoviesNumber(moviesNumbertoShowFirstTime);
+        setShownMovies(searchedMovies.slice(0, moviesNumbertoShowFirstTime));
+      } else {
+        setIsElseButtonShown(false);
+        setShownMovies(searchedMovies);
+      }
     } else {
-      setIsElseButtonShown(false);
-      setShownMovies(searchedMovies);
+        if (shortMovieFilterArrFirstSearch.length > moviesNumbertoShowFirstTime) {
+          setIsElseButtonShown(true);
+          setShownMoviesNumber(moviesNumbertoShowFirstTime);
+          setShownMovies(shortMovieFilterArrFirstSearch.slice(0, moviesNumbertoShowFirstTime));
+        } else {
+          setIsElseButtonShown(false);
+          setShownMovies(shortMovieFilterArrFirstSearch);
+        }
     }
+    
   }
 
+  // сколько найденных фильмов отобразить при первом и каждом следующем нажатии кнопки "Еще", 
+  // в зависимости от размера экрана и состояния фильтра короткометражек
   function handleShowMoreMoviesButton() {
-    if ((searchedMovies.length - shownMoviesNumber) > moviesNumbertoShowElse) {
-      setShownMovies(searchedMovies.slice(0, shownMoviesNumber + moviesNumbertoShowElse));
-      setShownMoviesNumber(shownMoviesNumber + moviesNumbertoShowElse);
+    if (!isFilterActive) {
+      if ((searchedMovies.length - shownMoviesNumber) > moviesNumbertoShowElse) {
+        setShownMovies(searchedMovies.slice(0, shownMoviesNumber + moviesNumbertoShowElse));
+        setShownMoviesNumber(shownMoviesNumber + moviesNumbertoShowElse);
+      } else {
+        setIsElseButtonShown(false);
+        setShownMovies(searchedMovies);
+      }
     } else {
-      setIsElseButtonShown(false);
-      setShownMovies(searchedMovies);
+        if ((shortMovieFilterArrFirstSearch.length - shownMoviesNumber) > moviesNumbertoShowElse) {
+          setShownMovies(shortMovieFilterArrFirstSearch.slice(0, shownMoviesNumber + moviesNumbertoShowElse));
+          setShownMoviesNumber(shownMoviesNumber + moviesNumbertoShowElse);
+        } else {
+          setIsElseButtonShown(false);
+          setShownMovies(shortMovieFilterArrFirstSearch);
+        }
     }
   }
 
@@ -397,16 +427,19 @@ function App() {
     <div className="App">
       <CurrentUserContext.Provider value={currentUser}>
         <Routes>
-          <Route exact path="/signup" element={<Register 
-            onRegister={handleRegister}
-            isApiError={isApiError}
-            apiErrorText={apiErrorText} 
-            isSuccessApiRequest={isSuccessApiRequest}
-          />} /> 
+          <Route exact path="/signup" 
+            element={<Register 
+              onRegister={handleRegister}
+              isApiError={isApiError}
+              apiErrorText={apiErrorText} 
+              isSuccessApiRequest={isSuccessApiRequest}
+              loggedIn={loggedIn}
+            />} /> 
           <Route exact path="/signin" element={<Login 
             onLogin={handleLogin}
             isApiError={isApiError}
             apiErrorText={apiErrorText}
+            loggedIn={loggedIn}
           />} />
           <Route path="*" element={<PageNotFound />} />
           <Route path="/*" element={<MainLayout 
