@@ -137,6 +137,16 @@
   }  
 }
 
+.user-form__submit-button_disabled {
+  color: #C2C2C2;
+  background: #F8F8F8;
+}
+
+.user-form__submit-button_disabled:hover {
+  opacity: 1;
+  cursor: auto;
+}
+
 .user-form__redirect {
   padding: 0;
   margin: 16px 0 0;
@@ -169,4 +179,20 @@
   .user-form__redirect-text {
     font-size: 12px;
   }  
+}
+
+.user-form__success-regist {
+  display: none;
+  padding: 0;
+  margin: 0 0 20px;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 1.21;
+  text-align: center;
+  color: #20B2AA;
+}
+
+.user-form__success-regist_active {
+  display: block;
 }

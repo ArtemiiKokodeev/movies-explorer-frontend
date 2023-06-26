@@ -1,44 +1,40 @@
 import { React, useState } from 'react';
+import { useForm } from 'react-hook-form';
 import './SearchForm.css';
 import searchIcon from '../../images/search-icon.svg';
 import searchButton from '../../images/find.svg';
 import verticalLine from '../../images/vertical-line.png';
 import FilterSearch from '../FilterSearch/FilterSearch'
 
-function SearchForm() {
+function SearchForm( { 
+  onSearchMovie, 
+  searchedMovieName,
+  onShortMovieFilter,
+  isFilterActive
+} ) {
 
-  const [formValue, setFormValue] = useState({
-    movie: ''
-  })
+  const { register, formState: { errors }, handleSubmit} = useForm();
 
-  const handleChange = (e) => {
-    const {name, value} = e.target;
+  const [movie, setMovie] = useState(searchedMovieName || "" );
 
-    setFormValue({
-      ...formValue,
-      [name]: value
-    });
-  }
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // onSearchMovies(formValue.movie);
+  const onSubmit = (data) => {
+    onSearchMovie(data.movie);
   }
 
   return (
-    <form name="search" className="search" onSubmit={handleSubmit}>
+    <form name="search" className="search" onSubmit={handleSubmit(onSubmit)}>
       <div className="search__bar">
         <div className="search__container">
           <div className="search__input-container">
             <img className="search__icon" src={searchIcon} alt="Значок лупы" />
-            <input 
-                id="movie" 
-                name="movie" 
-                type="text" 
-                placeholder="Фильм"
-                value={formValue.movie || ""} 
-                onChange={handleChange}
-                className="search__input" 
-                required
+            <input className="search__input" 
+              placeholder="Фильм"
+              {...register("movie", {
+                required: "Введите ключевое слово",
+                value: movie,
+                onChange: (e) => 
+                  setMovie(e.target.value)
+              })} 
             />
           </div>
           <button type="submit" name="submitButton" className="search__submit-button">
@@ -48,11 +44,21 @@ function SearchForm() {
         <div className="search__filter-container">
           <img className="search__vertical-line" src={verticalLine} alt="Вертикальная линия" />
           
-          <FilterSearch />
+          <FilterSearch 
+            onShortMovieFilter={onShortMovieFilter}
+            isFilterActive={isFilterActive}
+          />
         </div>
       </div>
-      <div className="search__filter-for-650px">
-        <FilterSearch />
+      {errors?.movie && 
+        <span className="search__validation-error">
+          {errors?.movie?.message || "Ошибка! Что-то пошло не так..."}
+        </span> }
+      <div className={`search__filter-for-650px ${!errors?.movie && "search__filter-for-650px_margin-top"}`}>
+          <FilterSearch 
+            onShortMovieFilter={onShortMovieFilter}
+            isFilterActive={isFilterActive}
+          />
       </div>
     </form>
   )

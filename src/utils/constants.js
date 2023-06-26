@@ -1,66 +1,27 @@
-// import movieSample from '../images/movie-sample.png';
+export const BASE_URL = process.env.NODE_ENV === 'production' ? 
+'https://api.cinemaworld.nomoredomains.rocks/' : 
+'http://localhost:3000/';
 
-const moviesSampleList = [
-  {
-    nameRU: "33 слова о дизайне",
-    duration: "1ч 47м",
-    image: "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/arkhyz.jpg",
+export const apiBeatFilmUrl = 'https://api.nomoreparties.co/beatfilm-movies';
+
+export const shortMovieDuration = 40;
+
+export const windowSizeBreakpoints = {
+  desktop: 1278,
+  tablet: 767
+}
+
+export const moviesNumberToShow = {
+  desktop: {
+    firstSearch: 12,
+    moreButton: 3
   },
-  {
-    nameRU: "33 слова о дизайне",
-    duration: "1ч 47м",
-    image: "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/arkhyz.jpg",
+  tablet: {
+    firstSearch: 8,
+    moreButton: 2
   },
-  {
-    nameRU: "33 слова о дизайне",
-    duration: "1ч 47м",
-    image: "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/arkhyz.jpg",
-  },
-  {
-    nameRU: "33 слова о дизайне",
-    duration: "1ч 47м",
-    image: "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/arkhyz.jpg",
-  },
-  {
-    nameRU: "33 слова о дизайне",
-    duration: "1ч 47м",
-    image: "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/arkhyz.jpg",
-  },
-  {
-    nameRU: "33 слова о дизайне",
-    duration: "1ч 47м",
-    image: "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/arkhyz.jpg",
-  },
-  {
-    nameRU: "33 слова о дизайне",
-    duration: "1ч 47м",
-    image: "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/arkhyz.jpg",
-  },
-  {
-    nameRU: "33 слова о дизайне",
-    duration: "1ч 47м",
-    image: "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/arkhyz.jpg",
-  },
-  {
-    nameRU: "33 слова о дизайне",
-    duration: "1ч 47м",
-    image: "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/arkhyz.jpg",
-  },
-  {
-    nameRU: "33 слова о дизайне",
-    duration: "1ч 47м",
-    image: "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/arkhyz.jpg",
-  },
-  {
-    nameRU: "33 слова о дизайне",
-    duration: "1ч 47м",
-    image: "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/arkhyz.jpg",
-  },
-  {
-    nameRU: "33 слова о дизайне",
-    duration: "1ч 47м",
-    image: "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/arkhyz.jpg",
+  smartphone: {
+    firstSearch: 5,
+    moreButton: 2
   }
-]
-
-export default moviesSampleList;
+}

@@ -5,18 +5,20 @@ import HeaderLogo from '../HeaderLogo/HeaderLogo';
 import Navigation from '../Navigation/Navigation';
 import headerGroupMenu from '../../images/navigation-burger.svg';
 
-function Header( { windowSize, onNavigationPopup } ) {
+function Header( { windowSize, onNavigationPopup, loggedIn } ) {
 
   return (
     <header className="header">
       <HeaderLogo />
       <Routes>
         <Route path="/" element={
-          <div className="header__container">
-            <Link to="/signup" className="header__link header__link_register">Регистрация</Link>
-            <Link to="/signin" className="header__link header__link_login">Войти</Link>
-          </div>
-          }
+          !loggedIn ? 
+            <div className="header__container">
+              <Link to="/signup" className="header__link header__link_register">Регистрация</Link>
+              <Link to="/signin" className="header__link header__link_login">Войти</Link>
+            </div> :
+            windowSize[0] > 990 ? <Navigation /> : 
+            <img className="header__nav-menu-icon" src={headerGroupMenu} alt="Меню" onClick={onNavigationPopup} />}
         />
 
         {["/movies", "/saved-movies", "/profile"].map((path, i) => (

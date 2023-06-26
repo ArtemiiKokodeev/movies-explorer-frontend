@@ -2,11 +2,12 @@
   padding: 0;
   margin: 0;
   width: 364px;
-  /* min-height: 361px; */
   display: flex;
   flex-direction: column;
   background: #FDFDFD;
   box-shadow: 0px 4px 30px rgba(0, 0, 0, 0.08);
+  align-self: center;
+  justify-self: center;
 }
 
 @media screen and (max-width: 1279px) {
@@ -57,6 +58,16 @@
   font-weight: 500;
   font-size: 15px;
   line-height: 1.21;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  max-width: 270px;
+}
+
+@media screen and (max-width: 767px) {
+  .movie__title {
+    max-width: 240px;
+  }
 }
 
 .movie__duration {
@@ -93,10 +104,32 @@
   margin-right: 14px;
 }
 
+.movie__delete-icon {
+  background-image: url(../../images/delete-icon.svg);
+  opacity: 1;
+  width: 30px;
+  height: 30px;
+  margin: 0 14px 0 0;
+  padding: 0;
+  background-repeat: no-repeat;
+  background-color: transparent;
+  border: none;
+}
+
+.movie__delete-icon {
+  opacity: .7;
+  cursor: pointer;
+}
+
 .movie__image {
   width: 364px;
   height: 203px;
   object-fit: cover;
+  display: block;
+}
+
+.movie__image:hover {
+  opacity: .8;
 }
 
 @media screen and (max-width: 1279px) {
@@ -111,4 +144,9 @@
     width: 300px;
     height: 168px;
   }
+}
+
+.movie__trailer-link {
+  margin: 0;
+  padding: 0;
 }

@@ -63,10 +63,19 @@
 }
 
 .profile__input-container {
-  margin-bottom: 220px;
+  min-height: 314px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .profile__info-container {
+  padding: 0;
+  margin: 0;
+  min-height: 30px;
+}
+
+.profile__info {
   padding: 0;
   margin: 0;
   display: flex;
@@ -111,7 +120,7 @@
   border: 1px #E8E8E8 solid;
   width: 100%;
   padding: 0;
-  margin: 16px 0 17px; 
+  margin: 0 0 16px 0; 
 }
 
 .profile__button {
@@ -167,4 +176,30 @@
 .profile__submit-button:hover {
   opacity: 0.7;
   cursor: pointer;
+}
+
+.profile__submit-button_disabled {
+  color: #C2C2C2;
+  background: #F8F8F8;
+}
+
+.profile__submit-button_disabled:hover {
+  opacity: 1;
+  cursor: auto;
+}
+
+.profile__success-update {
+  display: none;
+  padding: 0;
+  margin: 0 0 20px;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 1.21;
+  text-align: center;
+  color: #20B2AA;
+}
+
+.profile__success-update_active {
+  display: block;
 }
