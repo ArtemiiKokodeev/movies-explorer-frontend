@@ -1,12 +1,12 @@
-import { React, useState, useEffect } from 'react';
+import { React, useState, useEffect, useContext } from 'react';
 import { useForm } from 'react-hook-form';
+import { CurrentUserContext } from '../../utils/CurrentUserContext';
 import './Profile.css';
 import Error from '../Error/Error';
 import * as Validation from '../UserFormValidation/UserFormValidation';
 import UserFormValidation from '../UserFormValidation/UserFormValidation';
 
 function Profile( { 
-  currentUser,
   isEditing,
   onChangeEditProfileMode, 
   onUpdateUserInfo, 
@@ -14,6 +14,8 @@ function Profile( {
   isApiError,
   apiErrorText,
   onSignOut } ) {
+
+  const currentUser = useContext(CurrentUserContext);
 
   const { register, formState: { errors, isValid }, handleSubmit} = useForm({ mode: "onChange" });
 

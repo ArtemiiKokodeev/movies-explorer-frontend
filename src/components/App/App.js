@@ -18,7 +18,7 @@ import { shortMovieDuration, windowSizeBreakpoints, moviesNumberToShow
 
 function App() {
   const [windowSize, setWindowSize] = useState([window.innerWidth, window.innerHeight]); // текущий размер окна
-  const [loggedIn, setLoggedIn] = useState(false); // авторизован ли пользователь
+  const [loggedIn, setLoggedIn] = useState(null); // авторизован ли пользователь
   const [isSuccessApiRequest, setIsSuccessApiRequest] = useState(false);
   const [currentUser, setCurrentUser] = useState({}); // текущий авторизованный пользователь
   const [isEditing, setIsEditing] = useState(false); // переключение в режим редактирования профиля
@@ -157,7 +157,7 @@ function App() {
         // console.log(res);
         if (res.token) {
           localStorage.setItem("jwt", res.token);
-          setLoggedIn(true);
+          setLoggedIn(Boolean(true));
           setIsApiError(false);
           handleNavigateToMovies();
         }
@@ -177,10 +177,9 @@ function App() {
   function handleLogin(email, password) {
     MainApi.authorize(email, password)
       .then((data) => {
-        // console.log(data.token);
         if (data.token){
           localStorage.setItem("jwt", data.token);
-          setLoggedIn(true);
+          setLoggedIn(Boolean(true));
           setIsApiError(false);
           // setSearchedMovies(savedMovies);
           handleNavigateToMovies();
@@ -203,8 +202,11 @@ function App() {
       MainApi.checkToken(jwt)
       .then((res) => {
         if (res) {
-          // console.log(res)
-          setLoggedIn(true);
+          setLoggedIn(Boolean(true));
+          setCurrentUser({
+            name: res.name,
+            email: res.email,
+          })
         }
       })
       .catch((err) => {
@@ -298,7 +300,7 @@ function App() {
     setIsFilterActive(false);
     setShownMovies([]);
     localStorage.clear();
-    setLoggedIn(false);
+    setLoggedIn(Boolean(false));
     navigate('/', {replace: true});
   }
 
@@ -411,6 +413,7 @@ function App() {
 
   return (
     <div className="App">
+      { loggedIn !== null &&
       <CurrentUserContext.Provider value={currentUser}>
         <Routes>
           <Route exact path="/signup" 
@@ -473,7 +476,6 @@ function App() {
             <Route exact path="profile" element={
               <ProtectedRoute
                 loggedIn={loggedIn}
-                currentUser={currentUser}
                 isEditing={isEditing}
                 onChangeEditProfileMode={handleChangeEditProfileMode}
                 onUpdateUserInfo={handleUpdateUserInfo}
@@ -486,7 +488,9 @@ function App() {
             />
           </Route>
         </Routes>
+        
       </CurrentUserContext.Provider>
+      }
     </div>
   );
 }
